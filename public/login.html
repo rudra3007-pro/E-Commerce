@@ -6,9 +6,9 @@
   <title>Sign In — DeluluCrafts ♡ Handmade Bouquets</title>
   <link rel="stylesheet" href="/css/style.css">
   <script>
-    // If already logged in, redirect straight to the store home page
+    // If already logged in, redirect straight to the shop catalogue
     if (localStorage.getItem('token')) {
-      window.location.replace('/');
+      window.location.replace('/shop.html');
     }
   </script>
 </head>
@@ -93,7 +93,7 @@
 
   <script src="/js/api.js"></script>
   <script>
-    if (getToken()) window.location.href = '/';
+    if (getToken()) window.location.href = '/shop.html';
 
     function togglePass() {
       const inp = document.getElementById('password');
@@ -120,7 +120,7 @@
 
         showToast(`Welcome back, ${data.name}! Opening store…`, 'success');
         setTimeout(() => {
-          const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+          const redirect = new URLSearchParams(window.location.search).get('redirect') || '/shop.html';
           window.location.href = redirect;
         }, 600);
       } catch (err) {

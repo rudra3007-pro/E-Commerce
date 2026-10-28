@@ -174,7 +174,7 @@ function buildHeader(activePage = '') {
   return `
     <header class="header">
       <div class="header-inner">
-        <a href="/" class="logo">
+        <a href="/shop.html" class="logo">
           <div class="logo-stamp">🎀 Made by Hand • Made with Love</div>
           <div class="logo-main">Delulu <span class="logo-cursive">Craftss <span class="logo-heart">♡</span></span></div>
           <div class="logo-sub">Handmade Bouquets & Gifts</div>

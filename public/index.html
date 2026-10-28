@@ -7,9 +7,11 @@
   <meta name="description" content="Discover handmade bouquets, everlasting flowers, and curated personalized gift hampers crafted with love.">
   <link rel="stylesheet" href="/css/style.css">
   <script>
-    // Direct entry guard: if not authenticated, immediately redirect to login page
+    // Forward directly: unauthenticated to login, authenticated directly to shop
     if (!localStorage.getItem('token')) {
       window.location.replace('/login.html');
+    } else {
+      window.location.replace('/shop.html');
     }
   </script>
 </head>

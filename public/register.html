@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/style.css">
   <script>
     if (localStorage.getItem('token')) {
-      window.location.replace('/');
+      window.location.replace('/shop.html');
     }
   </script>
 </head>
@@ -74,7 +74,7 @@
   </div>
   <script src="/js/api.js"></script>
   <script>
-    if (getToken()) window.location.href = '/';
+    if (getToken()) window.location.href = '/shop.html';
     async function handleRegister(e) {
       e.preventDefault();
       const errEl = document.getElementById('errBox');
@@ -95,8 +95,8 @@
         localStorage.setItem('user', JSON.stringify(data));
         document.cookie = `token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
 
-        showToast(`Welcome to DeluluCrafts, ${data.name}! Opening store…`, 'success');
-        setTimeout(() => window.location.href = '/', 700);
+        showToast(`Welcome to DeluluCrafts, ${data.name}! Opening catalogue…`, 'success');
+        setTimeout(() => window.location.href = '/shop.html', 700);
       } catch (err) {
         errEl.textContent = err.message; errEl.style.display = 'block';
         btn.disabled = false; btn.textContent = 'Create Account →';

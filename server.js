@@ -39,14 +39,14 @@ app.get('/api/health', handleHealth);
 app.head('/health', (req, res) => res.status(200).end());
 app.head('/api/health', (req, res) => res.status(200).end());
 
-// Authentication redirect on root entry: unauthenticated visitors go directly to /login.html
+// Root entry routing: unauthenticated visitors go to /login.html, authenticated go directly to /shop.html
 app.get(['/', '/index.html'], (req, res, next) => {
   const cookies = req.headers.cookie || '';
   const hasToken = cookies.split(';').some(c => c.trim().startsWith('token=') && c.trim().split('=')[1]?.length > 10);
   if (!hasToken) {
     return res.redirect('/login.html');
   }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  return res.redirect('/shop.html');
 });
 
 // Serve static files from public folder
@@ -60,9 +60,9 @@ app.use('/api/wishlist', require('./routes/wishlist'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
 
-// Fallback to index.html for SPA routing
+// Fallback to shop.html for routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'shop.html'));
 });
 
 // Error handler
