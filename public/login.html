@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — ShopKart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Left branding panel -->
+    <div class="auth-left">
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="auth-left-brand">ShopKart</div>
+        <p class="auth-left-tagline">Shop Smarter.<br>Live <em>Better.</em></p>
+      </div>
+      <div class="auth-features">
+        <div class="auth-feature">
+          <div class="auth-feature-ico">🚚</div>
+          <div class="auth-feature-text"><strong>Free Delivery</strong>On all orders above ₹500</div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-ico">🔒</div>
+          <div class="auth-feature-text"><strong>Secure Checkout</strong>Bank-grade encryption</div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-ico">🔄</div>
+          <div class="auth-feature-text"><strong>Easy Returns</strong>30-day no-questions return policy</div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-ico">⭐</div>
+          <div class="auth-feature-text"><strong>Verified Products</strong>100% authentic, quality guaranteed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="auth-right">
+      <div class="auth-form-card">
+        <h1 class="auth-form-title">Welcome back</h1>
+        <p class="auth-form-sub">Sign in to your ShopKart account</p>
+
+        <div class="err-box" id="errBox"></div>
+
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div style="position:relative">
+              <input class="form-input" type="password" id="password" placeholder="••••••••" required style="padding-right:44px">
+              <button type="button" onclick="togglePass()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--muted)">Show</button>
+            </div>
+          </div>
+          <button class="btn-auth" type="submit" id="loginBtn">Sign In →</button>
+        </form>
+
+        <div class="auth-demo-box">
+          <div class="auth-demo-title">Demo Admin</div>
+          <div class="auth-demo-cred">admin@shopkart.com / admin123</div>
+          <button class="btn-demo" onclick="demoLogin()">Use Demo Account</button>
+        </div>
+
+        <div class="auth-link">Don't have an account? <a href="/register.html">Create one →</a></div>
+        <div class="auth-link" style="margin-top:8px"><a href="/">← Back to Store</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    if (getToken()) window.location.href = '/';
+
+    function togglePass() {
+      const inp = document.getElementById('password');
+      const btn = inp.nextElementSibling;
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.textContent = inp.type === 'password' ? 'Show' : 'Hide';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn   = document.getElementById('loginBtn');
+      const errEl = document.getElementById('errBox');
+      errEl.style.display = 'none';
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      try {
+        const data = await api.post('/auth/login', {
+          email:    document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user',  JSON.stringify(data));
+        showToast(`Welcome back, ${data.name}!`, 'success');
+        setTimeout(() => {
+          const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+          window.location.href = redirect;
+        }, 700);
+      } catch (err) {
+        errEl.textContent  = err.message;
+        errEl.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Sign In →';
+      }
+    }
+
+    function demoLogin() {
+      document.getElementById('email').value    = 'admin@shopkart.com';
+      document.getElementById('password').value = 'admin123';
+    }
+  </script>
+</body>
+</html>

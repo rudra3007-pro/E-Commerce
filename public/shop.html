@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop – ShopKart</title>
+  <meta name="description" content="Browse all products on ShopKart. Filter by category, price, rating and more.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app-header"></div>
+  <div id="app-nav"></div>
+  <main class="container" style="padding:16px 16px 48px">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <span id="breadcrumbCat">All Products</span>
+    </div>
+
+    <div class="shop-layout">
+      <!-- SIDEBAR FILTERS -->
+      <aside class="filter-sidebar">
+        <div class="filter-title">Filters</div>
+        <div class="filter-group">
+          <div class="filter-group-title">Category</div>
+          <div id="catFilters">
+            <label class="filter-opt"><input type="checkbox" value="" onchange="applyFilters()" id="catAll" checked> All Categories</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Price Range</div>
+          <div class="price-range">
+            <input class="price-inp" type="number" id="minPrice" placeholder="Min" min="0">
+            <span>–</span>
+            <input class="price-inp" type="number" id="maxPrice" placeholder="Max" min="0">
+          </div>
+          <button class="btn-apply" onclick="applyFilters()">Apply</button>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Customer Ratings</div>
+          <label class="filter-opt"><input type="radio" name="rating" value="4" onchange="applyFilters()"> 4★ & above</label>
+          <label class="filter-opt"><input type="radio" name="rating" value="3" onchange="applyFilters()"> 3★ & above</label>
+          <label class="filter-opt"><input type="radio" name="rating" value="0" checked onchange="applyFilters()"> All</label>
+        </div>
+        <button class="btn-clear" onclick="clearFilters()">Clear All Filters</button>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <div>
+        <!-- Sort Bar -->
+        <div class="sort-bar">
+          <span class="sort-lbl">Sort by:</span>
+          <button class="sort-pill active" data-sort="" onclick="setSort(this,'')">Relevance</button>
+          <button class="sort-pill" data-sort="popular" onclick="setSort(this,'popular')">Popularity</button>
+          <button class="sort-pill" data-sort="price_asc" onclick="setSort(this,'price_asc')">Price ↑</button>
+          <button class="sort-pill" data-sort="price_desc" onclick="setSort(this,'price_desc')">Price ↓</button>
+          <button class="sort-pill" data-sort="rating" onclick="setSort(this,'rating')">Rating</button>
+          <span id="resultCount" class="result-count"></span>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid">
+          <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:12px"></div><div class="skeleton skeleton-text sm"></div></div>
+          <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:12px"></div><div class="skeleton skeleton-text sm"></div></div>
+          <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:12px"></div><div class="skeleton skeleton-text sm"></div></div>
+          <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:12px"></div><div class="skeleton skeleton-text sm"></div></div>
+          <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:12px"></div><div class="skeleton skeleton-text sm"></div></div>
+          <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:12px"></div><div class="skeleton skeleton-text sm"></div></div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </main>
+  <div id="app-footer"></div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    let currentPage = 1;
+    let currentSort = '';
+    let selectedCategory = params.get('category') || '';
+    let keyword = params.get('keyword') || '';
+    let featured = params.get('featured') || '';
+
+    document.getElementById('app-header').innerHTML = buildHeader();
+    document.getElementById('app-nav').innerHTML = buildCategoryNav(selectedCategory);
+    document.getElementById('app-footer').innerHTML = buildFooter();
+
+    if (selectedCategory) {
+      document.getElementById('breadcrumbCat').textContent = selectedCategory;
+    }
+    if (keyword) {
+      document.getElementById('globalSearch').value = keyword;
+      document.getElementById('breadcrumbCat').textContent = `Search: "${keyword}"`;
+    }
+
+    // Populate category checkboxes
+    CATEGORIES.forEach(c => {
+      const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" value="${c.name}" ${selectedCategory === c.name ? 'checked' : ''} onchange="categoryChange(this)"> ${c.icon} ${c.name}`;
+        label.className = 'filter-opt';
+      document.getElementById('catFilters').appendChild(label);
+    });
+    if (selectedCategory) document.getElementById('catAll').checked = false;
+
+    function categoryChange(el) {
+      if (el.value === '') {
+        document.querySelectorAll('#catFilters input').forEach(i => i.checked = i.value === '');
+        selectedCategory = '';
+      } else {
+        document.getElementById('catAll').checked = false;
+        selectedCategory = el.checked ? el.value : '';
+        if (!el.checked) {
+          document.getElementById('catAll').checked = true;
+        }
+      }
+      currentPage = 1;
+      loadProducts();
+    }
+
+    function setSort(el, sort) {
+      document.querySelectorAll('.sort-pill').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      currentSort = sort; currentPage = 1; loadProducts();
+    }
+
+    function applyFilters() { currentPage = 1; loadProducts(); }
+
+    function clearFilters() {
+      selectedCategory = '';
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+      document.querySelector('input[name="rating"][value="0"]').checked = true;
+      document.querySelectorAll('#catFilters input').forEach(i => i.checked = i.value === '');
+      document.getElementById('catAll').checked = true;
+      currentPage = 1;
+      loadProducts();
+    }
+
+    async function loadProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = `<div style="grid-column:1/-1" class="loader"><div class="spinner"></div></div>`;
+
+      const minPrice = document.getElementById('minPrice').value;
+      const maxPrice = document.getElementById('maxPrice').value;
+      const ratingVal = document.querySelector('input[name="rating"]:checked')?.value || '0';
+
+      let url = `/products?page=${currentPage}&limit=12`;
+      if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+      if (selectedCategory) url += `&category=${encodeURIComponent(selectedCategory)}`;
+      if (currentSort) url += `&sort=${currentSort}`;
+      if (minPrice) url += `&minPrice=${minPrice}`;
+      if (maxPrice) url += `&maxPrice=${maxPrice}`;
+      if (featured) url += `&featured=true`;
+
+      try {
+        const data = await api.get(url);
+        let products = data.products;
+        if (ratingVal !== '0') products = products.filter(p => p.ratings >= Number(ratingVal));
+
+        document.getElementById('resultCount').textContent = `${data.total} products found`;
+
+        if (products.length === 0) {
+          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-icon">🔍</div>
+            <h3 class="empty-title">No products found</h3>
+            <p class="empty-subtitle">Try changing filters or search term</p>
+            <button class="btn-auth" onclick="clearFilters()" style="max-width:200px;padding:10px 24px">Clear Filters</button>
+          </div>`;
+        } else {
+          grid.innerHTML = products.map(buildProductCard).join('');
+        }
+
+        // Pagination
+        const pag = document.getElementById('pagination');
+        pag.innerHTML = '';
+        if (data.pages > 1) {
+          if (currentPage > 1) pag.innerHTML += `<button class="page-btn" onclick="changePage(${currentPage-1})">‹</button>`;
+          for (let i = 1; i <= data.pages; i++) {
+            pag.innerHTML += `<button class="page-btn ${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
+          }
+          if (currentPage < data.pages) pag.innerHTML += `<button class="page-btn" onclick="changePage(${currentPage+1})">›</button>`;
+        }
+      } catch (err) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚠️</div><h3>Error loading products</h3><p>${err.message}</p></div>`;
+      }
+    }
+
+    function changePage(p) {
+      currentPage = p;
+      loadProducts();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    loadProducts();
+    updateCartCount();
+  </script>
+</body>
+</html>

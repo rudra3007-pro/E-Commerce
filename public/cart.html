@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cart – ShopKart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app-header"></div>
+  <div id="app-nav"></div>
+  <main class="container" style="padding:16px 16px 64px">
+    <h1 style="font-size:22px;font-weight:800;margin-bottom:16px">My Cart</h1>
+    <div id="cartWrap">
+      <div class="loader"><div class="spinner"></div></div>
+    </div>
+  </main>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Checkout</div>
+        <button class="modal-close" onclick="closeCheckout()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="checkout-steps">
+          <div class="checkout-step active" id="step1Label">
+            <div class="checkout-step-num">1</div>
+            <div class="checkout-step-label">Address</div>
+          </div>
+          <div style="flex:1;height:2px;background:#e0e0e0;align-self:center"></div>
+          <div class="checkout-step" id="step2Label">
+            <div class="checkout-step-num">2</div>
+            <div class="checkout-step-label">Payment</div>
+          </div>
+          <div style="flex:1;height:2px;background:#e0e0e0;align-self:center"></div>
+          <div class="checkout-step" id="step3Label">
+            <div class="checkout-step-num">3</div>
+            <div class="checkout-step-label">Confirm</div>
+          </div>
+        </div>
+        <div id="checkoutStep1">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">Delivery Address</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Street Address</label>
+              <input type="text" class="form-input" id="addrStreet" placeholder="House No., Street, Area">
+            </div>
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input type="text" class="form-input" id="addrCity" placeholder="City">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input type="text" class="form-input" id="addrState" placeholder="State">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pincode</label>
+              <input type="text" class="form-input" id="addrPincode" placeholder="6-digit PIN" maxlength="6">
+            </div>
+          </div>
+        </div>
+        <div id="checkoutStep2" style="display:none">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">Payment Method</h3>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:2px solid var(--primary);border-radius:8px;cursor:pointer;background:var(--primary-light)">
+              <input type="radio" name="payment" value="COD" checked> 💵 Cash on Delivery
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #e0e0e0;border-radius:8px;cursor:pointer">
+              <input type="radio" name="payment" value="UPI"> 📱 UPI (GPay, PhonePe, Paytm)
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #e0e0e0;border-radius:8px;cursor:pointer">
+              <input type="radio" name="payment" value="Card"> 💳 Credit / Debit Card
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #e0e0e0;border-radius:8px;cursor:pointer">
+              <input type="radio" name="payment" value="NetBanking"> 🏦 Net Banking
+            </label>
+          </div>
+        </div>
+        <div id="checkoutStep3" style="display:none">
+          <div style="text-align:center;padding:20px 0">
+            <div style="font-size:64px;margin-bottom:16px">🎉</div>
+            <h3 style="font-size:20px;font-weight:800;margin-bottom:8px">Order Confirmed!</h3>
+            <p style="color:#717171;margin-bottom:20px">Your order has been placed successfully.</p>
+            <div id="orderSummaryText" style="background:#f0f7ff;border-radius:8px;padding:16px;text-align:left"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="checkoutFooter">
+        <button class="btn-secondary" onclick="closeCheckout()">Cancel</button>
+        <button class="btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-footer"></div>
+  <script src="/js/api.js"></script>
+  <script>
+    document.getElementById('app-header').innerHTML = buildHeader();
+    document.getElementById('app-nav').innerHTML = buildCategoryNav();
+    document.getElementById('app-footer').innerHTML = buildFooter();
+
+    let cart = [];
+    let checkoutStep = 1;
+
+    async function loadCart() {
+      if (!getToken()) {
+        document.getElementById('cartWrap').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h3 class="empty-title">Please login to view your cart</h3>
+            <p class="empty-subtitle">Login to access your saved items</p>
+            <a href="/login.html" class="btn-checkout" style="display:inline-block;padding:12px 32px;text-decoration:none;margin-top:16px">Login Now</a>
+          </div>`;
+        return;
+      }
+      try {
+        cart = await api.get('/cart', true);
+        renderCart();
+      } catch (err) {
+        document.getElementById('cartWrap').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>${err.message}</h3></div>`;
+      }
+    }
+
+    function renderCart() {
+      if (!cart || cart.length === 0) {
+        document.getElementById('cartWrap').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h3 class="empty-title">Your cart is empty</h3>
+            <p class="empty-subtitle">Add items to it now</p>
+            <a href="/shop.html" class="btn-checkout" style="display:inline-block;padding:12px 32px;text-decoration:none;margin-top:16px">Shop Now</a>
+          </div>`;
+        return;
+      }
+
+      let itemsTotal = 0;
+      let originalTotal = 0;
+      cart.forEach(item => {
+        const p = item.product;
+        const price = p.discountPrice > 0 ? p.discountPrice : p.price;
+        itemsTotal += price * item.quantity;
+        originalTotal += p.price * item.quantity;
+      });
+      const shipping = itemsTotal >= 500 ? 0 : 49;
+      const totalAmount = itemsTotal + shipping;
+      const savings = originalTotal - itemsTotal;
+
+      document.getElementById('cartWrap').innerHTML = `
+        <div class="cart-layout">
+          <div>
+            <div class="cart-items">
+              <div class="cart-header">
+                <div class="cart-header-title">Cart (${cart.length} item${cart.length>1?'s':''})</div>
+              </div>
+              ${cart.map(item => {
+                const p = item.product;
+                const price = p.discountPrice > 0 ? p.discountPrice : p.price;
+                return `
+                  <div class="cart-item" id="cartItem_${p._id}">
+                    ${p.images && p.images[0]
+                      ? `<img src="${p.images[0]}" alt="${p.name}" class="cart-item-img" onerror="this.style.display='none'">`
+                      : `<div class="cart-item-placeholder">📦</div>`}
+                    <div class="cart-item-info">
+                      <div class="cart-item-name" onclick="viewProduct('${p._id}')" style="cursor:pointer">${p.name}</div>
+                      <div style="font-size:12px;color:#717171;margin-bottom:6px">${p.brand} · ${p.category}</div>
+                      <div class="cart-item-price">${formatPrice(price)} ${p.discountPrice > 0 ? `<span style="font-size:13px;color:#717171;text-decoration:line-through;font-weight:400">${formatPrice(p.price)}</span>` : ''}</div>
+                      <div class="qty-ctrl">
+                        <button class="qty-btn" style="border-radius:4px 0 0 4px" onclick="updateQty('${p._id}',${item.quantity-1})">−</button>
+                        <div class="qty-display">${item.quantity}</div>
+                        <button class="qty-btn" style="border-radius:0 4px 4px 0" onclick="updateQty('${p._id}',${item.quantity+1})">+</button>
+                      </div>
+                      <div class="cart-item-actions">
+                        <button class="cart-action-btn" onclick="moveToWishlist('${p._id}')">♡ Save for Later</button>
+                        <button class="cart-action-btn danger" onclick="removeItem('${p._id}')">🗑 Remove</button>
+                      </div>
+                    </div>
+                    <div style="font-weight:700;white-space:nowrap">${formatPrice(price * item.quantity)}</div>
+                  </div>
+                `;
+              }).join('')}
+              <div style="padding:16px 20px;display:flex;justify-content:flex-end">
+                <button class="btn-checkout" onclick="openCheckout()" style="max-width:280px">
+                  Place Order (${cart.length} item${cart.length>1?'s':''})
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <div class="summary-title">Price Details</div>
+            <div class="summary-row"><span>Price (${cart.length} items)</span><span>${formatPrice(originalTotal)}</span></div>
+            ${savings > 0 ? `<div class="summary-row" style="color:var(--success)"><span>Discount</span><span>− ${formatPrice(savings)}</span></div>` : ''}
+            <div class="summary-row"><span>Delivery Charges</span><span style="color:var(--success)">${shipping === 0 ? 'FREE' : formatPrice(shipping)}</span></div>
+            <div class="summary-row total"><span>Total Amount</span><span>${formatPrice(totalAmount)}</span></div>
+            ${savings > 0 ? `<div class="summary-savings">🎉 You will save ${formatPrice(savings)} on this order!</div>` : ''}
+            <button class="btn-checkout" onclick="openCheckout()">Proceed to Checkout →</button>
+            <div style="font-size:12px;color:#717171;text-align:center;margin-top:12px">🔒 Safe & Secure Payments. 100% Authentic Products</div>
+          </div>
+        </div>`;
+    }
+
+    async function updateQty(productId, qty) {
+      try {
+        cart = await api.put(`/cart/${productId}`, { quantity: qty }, true);
+        renderCart();
+        updateCartCount();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function removeItem(productId) {
+      try {
+        cart = await api.delete(`/cart/${productId}`, true);
+        renderCart();
+        updateCartCount();
+        showToast('Item removed from cart', 'info');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function moveToWishlist(productId) {
+      try {
+        await api.post(`/wishlist/${productId}`, {}, true);
+        await removeItem(productId);
+        showToast('Moved to wishlist ❤️', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // Checkout flow
+    function openCheckout() {
+      if (!getToken()) { showToast('Please login first', 'warning'); return goTo('login.html'); }
+      checkoutStep = 1;
+      document.getElementById('checkoutModal').classList.add('open');
+    }
+    function closeCheckout() {
+      if (checkoutStep === 3) { location.reload(); return; }
+      document.getElementById('checkoutModal').classList.remove('open');
+    }
+
+    async function nextStep() {
+      if (checkoutStep === 1) {
+        const street = document.getElementById('addrStreet').value.trim();
+        const city = document.getElementById('addrCity').value.trim();
+        const state = document.getElementById('addrState').value.trim();
+        const pincode = document.getElementById('addrPincode').value.trim();
+        if (!street || !city || !state || !pincode) return showToast('Please fill all address fields', 'warning');
+        if (pincode.length !== 6) return showToast('Enter valid 6-digit pincode', 'warning');
+        checkoutStep = 2;
+        document.getElementById('checkoutStep1').style.display = 'none';
+        document.getElementById('checkoutStep2').style.display = 'block';
+        document.getElementById('step1Label').classList.add('done');
+        document.getElementById('step2Label').classList.add('active');
+      } else if (checkoutStep === 2) {
+        const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+        const street = document.getElementById('addrStreet').value.trim();
+        const city = document.getElementById('addrCity').value.trim();
+        const state = document.getElementById('addrState').value.trim();
+        const pincode = document.getElementById('addrPincode').value.trim();
+        const items = cart.map(item => ({
+          product: item.product._id,
+          name: item.product.name,
+          quantity: item.quantity
+        }));
+        try {
+          document.querySelector('#checkoutFooter .btn-primary').disabled = true;
+          document.querySelector('#checkoutFooter .btn-primary').textContent = 'Placing Order...';
+          const order = await api.post('/orders', { items, shippingAddress: { street, city, state, pincode }, paymentMethod }, true);
+          checkoutStep = 3;
+          document.getElementById('checkoutStep2').style.display = 'none';
+          document.getElementById('checkoutStep3').style.display = 'block';
+          document.getElementById('step2Label').classList.add('done');
+          document.getElementById('step3Label').classList.add('active', 'done');
+          document.getElementById('checkoutFooter').innerHTML = `<button class="btn-primary" onclick="goTo('orders.html')">View My Orders</button>`;
+          document.getElementById('orderSummaryText').innerHTML = `
+            <div style="margin-bottom:8px"><strong>Order ID:</strong> ${order._id}</div>
+            <div style="margin-bottom:8px"><strong>Payment:</strong> ${paymentMethod}</div>
+            <div style="margin-bottom:8px"><strong>Total:</strong> ${formatPrice(order.totalAmount)}</div>
+            <div><strong>Delivering to:</strong> ${street}, ${city}, ${state} - ${pincode}</div>
+          `;
+          cart = [];
+          updateCartCount();
+        } catch (err) {
+          showToast(err.message, 'error');
+          document.querySelector('#checkoutFooter .btn-primary').disabled = false;
+          document.querySelector('#checkoutFooter .btn-primary').textContent = 'Continue →';
+        }
+      }
+    }
+
+    loadCart();
+    updateCartCount();
+  </script>
+</body>
+</html>

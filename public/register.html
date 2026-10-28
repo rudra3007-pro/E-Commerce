@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — ShopKart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-left">
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="auth-left-brand">ShopKart</div>
+        <p class="auth-left-tagline">Join <em>Millions</em><br>of Happy Shoppers</p>
+      </div>
+      <div class="auth-features">
+        <div class="auth-feature"><div class="auth-feature-ico">🎁</div><div class="auth-feature-text"><strong>Exclusive Deals</strong>Members-only offers & early access</div></div>
+        <div class="auth-feature"><div class="auth-feature-ico">📦</div><div class="auth-feature-text"><strong>Order Tracking</strong>Real-time delivery updates</div></div>
+        <div class="auth-feature"><div class="auth-feature-ico">❤️</div><div class="auth-feature-text"><strong>Wishlist</strong>Save items you love for later</div></div>
+        <div class="auth-feature"><div class="auth-feature-ico">💳</div><div class="auth-feature-text"><strong>Easy Checkout</strong>Saved addresses & faster payments</div></div>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-form-card">
+        <h1 class="auth-form-title">Create Account</h1>
+        <p class="auth-form-sub">Join ShopKart — it's free</p>
+        <div class="err-box" id="errBox"></div>
+        <form onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input class="form-input" type="text" id="name" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone <span style="color:var(--muted-2);font-size:10px;text-transform:none;font-weight:400">(optional)</span></label>
+            <input class="form-input" type="tel" id="phone" placeholder="+91 9XXXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-input" type="password" id="password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirmPwd">Confirm Password</label>
+            <input class="form-input" type="password" id="confirmPwd" placeholder="Repeat password" required>
+          </div>
+          <button class="btn-auth" type="submit" id="regBtn">Create Account →</button>
+        </form>
+        <div class="auth-link" style="margin-top:20px">Already have an account? <a href="/login.html">Sign in →</a></div>
+        <div class="auth-link" style="margin-top:8px"><a href="/">← Back to Store</a></div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/api.js"></script>
+  <script>
+    if (getToken()) window.location.href = '/';
+    async function handleRegister(e) {
+      e.preventDefault();
+      const errEl = document.getElementById('errBox');
+      const btn   = document.getElementById('regBtn');
+      errEl.style.display = 'none';
+      const password   = document.getElementById('password').value;
+      const confirmPwd = document.getElementById('confirmPwd').value;
+      if (password !== confirmPwd) { errEl.textContent = 'Passwords do not match'; errEl.style.display = 'block'; return; }
+      btn.disabled = true; btn.textContent = 'Creating account…';
+      try {
+        const data = await api.post('/auth/register', {
+          name:     document.getElementById('name').value.trim(),
+          email:    document.getElementById('email').value.trim(),
+          phone:    document.getElementById('phone').value.trim(),
+          password,
+        });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        showToast(`Welcome to ShopKart, ${data.name}!`, 'success');
+        setTimeout(() => window.location.href = '/', 700);
+      } catch (err) {
+        errEl.textContent = err.message; errEl.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Create Account →';
+      }
+    }
+  </script>
+</body>
+</html>

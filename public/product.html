@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product – ShopKart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app-header"></div>
+  <div id="app-nav"></div>
+  <main class="container" style="padding:16px 16px 64px">
+    <div id="breadcrumbWrap" class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="/shop.html">Products</a>
+      <span class="breadcrumb-sep">›</span>
+      <span id="breadcrumbName">Loading...</span>
+    </div>
+    <div id="productWrap">
+      <div class="loader"><div class="spinner"></div></div>
+    </div>
+    <section class="mt-3" id="relatedSection" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">Similar Products</h2>
+        <button class="see-all" onclick="goTo('shop.html')">View All</button>
+      </div>
+      <div class="products-grid" id="relatedGrid"></div>
+    </section>
+  </main>
+  <div id="app-footer"></div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const pid = new URLSearchParams(window.location.search).get('id');
+    document.getElementById('app-header').innerHTML = buildHeader();
+    document.getElementById('app-nav').innerHTML = buildCategoryNav();
+    document.getElementById('app-footer').innerHTML = buildFooter();
+
+    let product = null;
+    let selectedQty = 1;
+    let selectedRating = 0;
+    let currentImg = 0;
+
+    async function loadProduct() {
+      if (!pid) return document.getElementById('productWrap').innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Product not found</h3></div>';
+      try {
+        product = await api.get(`/products/${pid}`);
+        document.title = `${product.name} – ShopKart`;
+        document.getElementById('breadcrumbName').textContent = product.name;
+        renderProduct();
+        loadRelated();
+      } catch (err) {
+        document.getElementById('productWrap').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>${err.message}</h3><a href="/shop.html" style="color:var(--primary)">← Back to Shop</a></div>`;
+      }
+    }
+
+    function renderProduct() {
+      const p = product;
+      const finalPrice = p.discountPrice > 0 ? p.discountPrice : p.price;
+      const discPct = p.discountPercent || (p.discountPrice > 0 ? Math.round(((p.price - p.discountPrice) / p.price) * 100) : 0);
+      const user = getUser();
+      const isWishlisted = user?.wishlist?.includes(p._id);
+
+      document.getElementById('productWrap').innerHTML = `
+        <div class="product-detail">
+          <!-- Images -->
+          <div class="product-images">
+            ${p.images && p.images[0]
+              ? `<img id="mainImg" src="${p.images[0]}" alt="${p.name}" class="main-image" onerror="this.style.display='none';document.getElementById('mainImgPlaceholder').style.display='flex'">`
+              : ''}
+            <div id="mainImgPlaceholder" class="main-image-placeholder" ${p.images && p.images[0] ? 'style="display:none"' : ''}>📦</div>
+            ${p.images && p.images.length > 1 ? `
+            <div class="image-thumbs">
+              ${p.images.map((img, i) => `<img src="${img}" alt="${p.name} ${i+1}" class="thumb ${i===0?'active':''}" onclick="switchImage('${img}',${i})" onerror="this.style.display='none'">`).join('')}
+            </div>` : ''}
+          </div>
+
+          <!-- Details -->
+          <div style="padding-bottom:80px">
+            <h1 class="product-detail-name">${p.name}</h1>
+            <div class="detail-rating-wrap">
+              <span class="detail-rating">★ ${p.ratings}</span>
+              <span class="detail-reviews">${p.numReviews} Ratings & Reviews</span>
+              ${p.stock <= 5 && p.stock > 0 ? `<span class="badge badge-warning">Only ${p.stock} left!</span>` : ''}
+              ${p.stock === 0 ? `<span class="badge badge-danger">Out of Stock</span>` : '<span class="badge badge-success">In Stock</span>'}
+            </div>
+            <div class="price-section">
+              <span class="detail-price">${formatPrice(finalPrice)}</span>
+              ${p.discountPrice > 0 ? `
+                <span class="detail-original">${formatPrice(p.price)}</span>
+                <span class="detail-discount">${discPct}% off</span>
+              ` : ''}
+              <div style="font-size:13px;color:#717171;margin-top:6px">+ Free shipping on orders above ₹500</div>
+            </div>
+
+            <div class="offers-section">
+              <div class="offers-title">💳 Available Offers</div>
+              <div class="offer-item"><span class="offer-tag">Bank Offer</span> 10% instant discount on HDFC Credit Card</div>
+              <div class="offer-item"><span class="offer-tag">EMI</span> No Cost EMI on orders above ₹3,000</div>
+              <div class="offer-item"><span class="offer-tag">Exchange</span> Get up to ₹5,000 off on exchange</div>
+            </div>
+
+            <!-- Quantity -->
+            <div style="margin:20px 0">
+              <div style="font-size:14px;font-weight:600;margin-bottom:8px">Quantity:</div>
+              <div class="qty-ctrl" style="display:inline-flex">
+                <button class="qty-btn" style="border-radius:4px 0 0 4px" onclick="changeQty(-1)">−</button>
+                <div class="qty-display" id="qtyDisplay">1</div>
+                <button class="qty-btn" style="border-radius:0 4px 4px 0" onclick="changeQty(1)">+</button>
+              </div>
+            </div>
+
+            <!-- Wishlist -->
+            <button onclick="toggleWishlist(null,'${p._id}',this)" 
+              style="margin-bottom:16px;padding:8px 16px;border:1px solid var(--border);border-radius:4px;background:white;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px"
+              class="${isWishlisted?'active':''}">
+              ${isWishlisted ? '❤️' : '🤍'} ${isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
+            </button>
+
+            <!-- Description -->
+            <div style="margin:20px 0">
+              <div style="font-weight:700;margin-bottom:8px">Description</div>
+              <p style="font-size:14px;color:#555;line-height:1.7">${p.description}</p>
+            </div>
+
+            <!-- Specs -->
+            ${p.specifications && p.specifications.length > 0 ? `
+            <div style="margin:20px 0">
+              <div style="font-weight:700;margin-bottom:12px">Specifications</div>
+              <table style="width:100%;border-collapse:collapse">
+                ${p.specifications.map((s, i) => `
+                  <tr style="background:${i%2===0?'#f8f9fa':'white'}">
+                    <td style="padding:10px 16px;font-size:13px;color:#717171;width:40%;font-weight:500">${s.key}</td>
+                    <td style="padding:10px 16px;font-size:13px">${s.value}</td>
+                  </tr>
+                `).join('')}
+              </table>
+            </div>` : ''}
+
+            <!-- Delivery Info -->
+            <div style="background:#f0f7ff;border-radius:8px;padding:16px;margin-top:16px">
+              <div style="font-weight:700;margin-bottom:8px">🚚 Delivery</div>
+              <div style="font-size:13px;color:#555">
+                <div style="margin-bottom:4px">🏠 Enter PIN code for delivery ETA</div>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <input type="text" placeholder="Enter Pincode" id="pincodeInput" maxlength="6" style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;width:120px">
+                  <button onclick="checkDelivery()" style="padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:4px;font-size:13px;cursor:pointer">Check</button>
+                </div>
+                <div id="deliveryInfo" style="margin-top:8px;font-size:13px;color:#2e7d32"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sticky Actions -->
+          <div class="product-actions-sticky">
+            <button class="btn-lg btn-add-cart" onclick="addToCart(null,'${p._id}',selectedQty)" ${p.stock===0?'disabled':''}>
+              🛒 Add to Cart
+            </button>
+            <button class="btn-lg btn-buy-now" onclick="buyNow(null,'${p._id}')" ${p.stock===0?'disabled':''}>
+              ⚡ Buy Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="reviews-section" style="background:var(--card);border-radius:12px;padding:24px;margin-top:16px;border:1px solid var(--border-light)">
+          <h2 class="section-title" style="margin-bottom:24px">Ratings & Reviews</h2>
+          <div class="review-summary">
+            <div>
+              <div class="review-score">${p.ratings || 0}</div>
+              <div class="stars-row">${renderStars(p.ratings)}</div>
+              <div style="font-size:13px;color:#717171">${p.numReviews} reviews</div>
+            </div>
+          </div>
+          <div id="reviewsList">
+            ${p.reviews && p.reviews.length > 0
+              ? p.reviews.map(r => `
+                <div class="review-card">
+                  <div class="review-header">
+                    <div class="reviewer-avatar">${r.name.charAt(0).toUpperCase()}</div>
+                    <div>
+                      <div style="font-weight:600;font-size:14px">${r.name}</div>
+                      <span class="review-rating-badge">★ ${r.rating}</span>
+                    </div>
+                  </div>
+                  <p class="review-comment">${r.comment}</p>
+                  <div class="review-date">${new Date(r.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</div>
+                </div>
+              `).join('')
+              : '<p class="text-muted" style="margin-bottom:16px">No reviews yet. Be the first to review!</p>'
+            }
+          </div>
+
+          <!-- Add Review -->
+          ${getToken() ? `
+          <div class="add-review-form">
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Write a Review</h3>
+            <div class="form-group">
+              <div class="form-label">Your Rating</div>
+              <div class="star-picker" id="starPicker">
+                ${[1,2,3,4,5].map(n => `<span class="star-pick" onclick="setRating(${n})" onmouseover="hoverRating(${n})" onmouseout="resetHover()">★</span>`).join('')}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Review</label>
+              <textarea class="form-textarea" id="reviewComment" placeholder="Share your experience with this product..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="submitReview()">Submit Review</button>
+          </div>
+          ` : `<div style="padding:16px;background:#f0f7ff;border-radius:8px;text-align:center;font-size:14px">
+            <a href="/login.html" style="color:var(--primary);font-weight:600">Login</a> to write a review
+          </div>`}
+        </div>
+      `;
+    }
+
+    function switchImage(src, i) {
+      const img = document.getElementById('mainImg');
+      if (img) img.src = src;
+      document.querySelectorAll('.thumb').forEach((t, idx) => t.classList.toggle('active', idx === i));
+      currentImg = i;
+    }
+
+    function changeQty(dir) {
+      selectedQty = Math.max(1, Math.min(product?.stock || 10, selectedQty + dir));
+      document.getElementById('qtyDisplay').textContent = selectedQty;
+    }
+
+    function checkDelivery() {
+      const pin = document.getElementById('pincodeInput').value;
+      if (pin.length === 6) {
+        const days = Math.floor(Math.random() * 3) + 2;
+        const date = new Date(); date.setDate(date.getDate() + days);
+        document.getElementById('deliveryInfo').innerHTML = `✅ Delivery by <strong>${date.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'})}</strong>`;
+      } else {
+        showToast('Enter a valid 6-digit pincode', 'warning');
+      }
+    }
+
+    // Review Rating
+    function setRating(n) { selectedRating = n; updateStars(n); }
+    function hoverRating(n) { updateStars(n); }
+    function resetHover() { updateStars(selectedRating); }
+    function updateStars(n) {
+      document.querySelectorAll('.star-pick').forEach((s, i) => s.classList.toggle('selected', i < n));
+    }
+
+    async function submitReview() {
+      if (!selectedRating) return showToast('Please select a rating', 'warning');
+      const comment = document.getElementById('reviewComment').value.trim();
+      if (!comment) return showToast('Please write a review', 'warning');
+      try {
+        await api.post(`/products/${pid}/review`, { rating: selectedRating, comment }, true);
+        showToast('Review submitted! ✅', 'success');
+        setTimeout(() => location.reload(), 1000);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function loadRelated() {
+      if (!product) return;
+      try {
+        const data = await api.get(`/products?category=${encodeURIComponent(product.category)}&limit=4`);
+        const related = data.products.filter(p => p._id !== pid);
+        if (related.length > 0) {
+          document.getElementById('relatedSection').style.display = 'block';
+          document.getElementById('relatedGrid').innerHTML = related.map(buildProductCard).join('');
+        }
+      } catch {}
+    }
+
+    loadProduct();
+    updateCartCount();
+  </script>
+</body>
+</html>

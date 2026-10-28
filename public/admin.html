@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – ShopKart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background:var(--surface)">
+  <!-- Admin Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <div class="logo-main">ShopKart</div>
+        <div class="logo-sub">Admin Console</div>
+      </a>
+      <div style="flex:1"></div>
+      <div class="header-nav">
+        <a href="/" class="h-btn"><span>🏪</span><span>Store</span></a>
+        <button class="h-btn" onclick="logout()"><span>🚪</span><span>Logout</span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Body -->
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <div class="admin-sidebar-title">⚙️ Admin Panel</div>
+        <div id="adminName" style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px"></div>
+      </div>
+      <button class="admin-nav-btn active" id="nav-dashboard" onclick="showPage('dashboard')"><span class="admin-nav-ico">📊</span> Dashboard</button>
+      <button class="admin-nav-btn" id="nav-products" onclick="showPage('products')"><span class="admin-nav-ico">📦</span> Products</button>
+      <button class="admin-nav-btn" id="nav-orders" onclick="showPage('orders')"><span class="admin-nav-ico">🛒</span> Orders</button>
+      <button class="admin-nav-btn" id="nav-users" onclick="showPage('users')"><span class="admin-nav-ico">👥</span> Users</button>
+    </aside>
+
+    <!-- Content -->
+    <main class="admin-content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="admin-page active" id="page-dashboard">
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:20px">Dashboard Overview</h2>
+        <div class="stat-grid" id="statCards">
+          <div class="stat-card"><div class="stat-ico s1">📦</div><div><div class="stat-val" id="stat-products">—</div><div class="stat-lbl">Total Products</div></div></div>
+          <div class="stat-card"><div class="stat-ico s2">🛒</div><div><div class="stat-val" id="stat-orders">—</div><div class="stat-lbl">Total Orders</div></div></div>
+          <div class="stat-card"><div class="stat-ico s3">👥</div><div><div class="stat-val" id="stat-users">—</div><div class="stat-lbl">Registered Users</div></div></div>
+          <div class="stat-card"><div class="stat-ico s4">💰</div><div><div class="stat-val" id="stat-revenue">—</div><div class="stat-lbl">Total Revenue</div></div></div>
+        </div>
+
+        <div class="admin-table-card">
+          <div class="admin-table-head">
+            <div style="font-weight:700">Recent Orders</div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="admin-table" id="recentOrdersTable">
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="recentOrdersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PRODUCTS ===== -->
+      <div class="admin-page" id="page-products">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <h2 style="font-size:22px;font-weight:800">Products</h2>
+          <button class="btn-primary" onclick="openProductModal()">+ Add Product</button>
+        </div>
+        <div class="admin-table-card">
+          <div class="admin-table-head">
+            <input type="text" placeholder="Search products…" class="admin-search" oninput="filterProducts(this.value)">
+            <span id="productCount" style="font-size:13px;color:var(--muted-2)"></span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Rating</th><th>Featured</th><th>Actions</th></tr></thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="productPagination" style="padding:16px"></div>
+        </div>
+      </div>
+
+      <!-- ===== ORDERS ===== -->
+      <div class="admin-page" id="page-orders">
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:20px">Orders</h2>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="sort-pill active" onclick="filterOrders('',this)">All</button>
+          <button class="sort-pill" onclick="filterOrders('Processing',this)">Processing</button>
+          <button class="sort-pill" onclick="filterOrders('Confirmed',this)">Confirmed</button>
+          <button class="sort-pill" onclick="filterOrders('Shipped',this)">Shipped</button>
+          <button class="sort-pill" onclick="filterOrders('Delivered',this)">Delivered</button>
+          <button class="sort-pill" onclick="filterOrders('Cancelled',this)">Cancelled</button>
+        </div>
+        <div class="admin-table-card">
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Update</th></tr></thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== USERS ===== -->
+      <div class="admin-page" id="page-users">
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:20px">Users</h2>
+        <div class="admin-table-card">
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead><tr><th>Avatar</th><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>Joined</th></tr></thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Add Product</div>
+        <button class="modal-close" onclick="closeProductModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editProductId">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Product Name *</label>
+            <input class="form-input" type="text" id="prodName" placeholder="e.g. Samsung Galaxy S24">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand *</label>
+            <input class="form-input" type="text" id="prodBrand" placeholder="e.g. Samsung">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="form-textarea" id="prodDesc" placeholder="Describe the product in detail..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select class="form-select" id="prodCat">
+              <option value="">Select Category</option>
+              <option>Electronics</option><option>Fashion</option>
+              <option>Home & Kitchen</option><option>Books</option>
+              <option>Sports</option><option>Beauty</option>
+              <option>Toys</option><option>Automotive</option>
+              <option>Grocery</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stock Quantity *</label>
+            <input class="form-input" type="number" id="prodStock" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Original Price (₹) *</label>
+            <input class="form-input" type="number" id="prodPrice" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Discounted Price (₹) <span style="color:#9e9e9e;font-size:11px">(optional)</span></label>
+            <input class="form-input" type="number" id="prodDiscPrice" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Images (URLs, one per line)</label>
+          <textarea class="form-textarea" id="prodImages" style="min-height:80px" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
+          <div style="font-size:12px;color:#9e9e9e;margin-top:4px">💡 You can use any image URL from the internet. Try picsum.photos for placeholders.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Specifications (Key: Value, one per line)</label>
+          <textarea class="form-textarea" id="prodSpecs" style="min-height:80px" placeholder="Brand: Samsung&#10;RAM: 8 GB&#10;Storage: 128 GB&#10;Display: 6.7 inch"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tags (comma-separated)</label>
+          <input class="form-input" type="text" id="prodTags" placeholder="smartphone, 5G, Android">
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500">
+            <input type="checkbox" id="prodFeatured" style="width:18px;height:18px;accent-color:var(--primary)">
+            ⭐ Mark as Featured Product (shows on homepage)
+          </label>
+        </div>
+        <div class="form-group" id="activeToggle" style="display:none">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500">
+            <input type="checkbox" id="prodActive" checked style="width:18px;height:18px;accent-color:var(--success)">
+            ✅ Product Active (visible to customers)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeProductModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveProduct()" id="saveProductBtn">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM MODAL -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal" style="max-width:400px">
+      <div class="modal-header">
+        <div class="modal-title">Confirm Delete</div>
+        <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+      </div>
+      <div class="modal-body" style="text-align:center;padding:32px">
+        <div style="font-size:48px;margin-bottom:16px">⚠️</div>
+        <p style="font-size:15px;margin-bottom:8px">Are you sure you want to delete this product?</p>
+        <p style="font-size:13px;color:#717171">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button style="padding:10px 20px;background:var(--danger);color:white;border:none;border-radius:4px;font-weight:600;cursor:pointer" onclick="confirmDelete()">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // Auth guard – admin only
+    const user = getUser();
+    if (!user || user.role !== 'admin') {
+      showToast('Admin access required', 'error');
+      setTimeout(() => window.location.href = '/login.html', 500);
+    } else {
+      document.getElementById('adminName').textContent = user.name;
+    }
+
+    function showPage(page) {
+      document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`page-${page}`).classList.add('active');
+      document.getElementById(`nav-${page}`).classList.add('active');
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'products') loadAdminProducts();
+      if (page === 'orders') loadAdminOrders();
+      if (page === 'users') loadUsers();
+    }
+
+    // ── DASHBOARD ──
+    async function loadDashboard() {
+      try {
+        const stats = await api.get('/admin/stats', true);
+        document.getElementById('stat-products').textContent = stats.totalProducts;
+        document.getElementById('stat-orders').textContent = stats.totalOrders;
+        document.getElementById('stat-users').textContent = stats.totalUsers;
+        document.getElementById('stat-revenue').textContent = formatPrice(stats.totalRevenue);
+        const tbody = document.getElementById('recentOrdersBody');
+        tbody.innerHTML = stats.recentOrders.map(o => `
+          <tr>
+            <td style="font-family:monospace;font-size:12px">#${o._id.slice(-8).toUpperCase()}</td>
+            <td>${o.user?.name || 'N/A'}</td>
+            <td style="font-weight:600">${formatPrice(o.totalAmount)}</td>
+            <td><span class="badge ${getStatusBadge(o.orderStatus)}">${o.orderStatus}</span></td>
+            <td style="font-size:12px">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
+          </tr>
+        `).join('');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    function getStatusBadge(s) {
+      const map = { 'Delivered': 'badge-success', 'Cancelled': 'badge-danger', 'Processing': 'badge-warning', 'Confirmed': 'badge-info', 'Shipped': 'badge-info', 'Out for Delivery': 'badge-warning' };
+      return map[s] || 'badge-grey';
+    }
+
+    // ── PRODUCTS ──
+    let allProducts = [];
+    let prodPage = 1;
+
+    async function loadAdminProducts(page = 1) {
+      prodPage = page;
+      try {
+        const data = await api.get(`/admin/products?page=${page}&limit=20`, true);
+        allProducts = data.products;
+        document.getElementById('productCount').textContent = `${data.total} products`;
+        renderProductsTable(allProducts);
+        renderPagination('productPagination', data.pages, page, (p) => loadAdminProducts(p));
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    function filterProducts(keyword) {
+      const filtered = allProducts.filter(p =>
+        p.name.toLowerCase().includes(keyword.toLowerCase()) ||
+        p.brand.toLowerCase().includes(keyword.toLowerCase()) ||
+        p.category.toLowerCase().includes(keyword.toLowerCase())
+      );
+      renderProductsTable(filtered);
+    }
+
+    function renderProductsTable(products) {
+      const tbody = document.getElementById('productsTableBody');
+      if (!products.length) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:#9e9e9e">No products found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = products.map(p => `
+        <tr id="prow_${p._id}">
+          <td>
+            ${p.images && p.images[0]
+              ? `<img src="${p.images[0]}" alt="${p.name}" class="admin-prod-img" onerror="this.style.display='none'">`
+              : `<div class="admin-prod-placeholder">📦</div>`}
+          </td>
+          <td>
+            <div style="font-weight:600;font-size:14px;max-width:200px">${p.name}</div>
+            <div style="font-size:12px;color:#9e9e9e">${p.brand}</div>
+            ${!p.isActive ? '<span class="badge badge-danger" style="margin-top:4px">Inactive</span>' : ''}
+          </td>
+          <td><span class="badge badge-info">${p.category}</span></td>
+          <td>
+            <div style="font-weight:600">${formatPrice(p.discountPrice > 0 ? p.discountPrice : p.price)}</div>
+            ${p.discountPrice > 0 ? `<div style="font-size:12px;color:#9e9e9e;text-decoration:line-through">${formatPrice(p.price)}</div>` : ''}
+          </td>
+          <td><span class="${p.stock <= 5 ? 'badge badge-danger' : 'badge badge-success'}">${p.stock}</span></td>
+          <td>
+            <span class="badge" style="background:#fff3e0;color:#e65100">★ ${p.ratings} (${p.numReviews})</span>
+          </td>
+          <td>${p.isFeatured ? '⭐' : '—'}</td>
+          <td>
+            <div style="display:flex;gap:4px">
+              <button class="action-btn btn-edit" onclick="openProductModal('${p._id}')">Edit</button>
+              <button class="action-btn btn-delete" onclick="openDeleteModal('${p._id}')">Delete</button>
+              <button class="action-btn btn-view" onclick="viewProduct('${p._id}')">View</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Product Modal
+    let editingProductId = null;
+    function openProductModal(productId = null) {
+      editingProductId = productId;
+      document.getElementById('modalTitle').textContent = productId ? 'Edit Product' : 'Add Product';
+      document.getElementById('activeToggle').style.display = productId ? 'block' : 'none';
+      if (productId) {
+        const p = allProducts.find(x => x._id === productId);
+        if (p) {
+          document.getElementById('editProductId').value = p._id;
+          document.getElementById('prodName').value = p.name;
+          document.getElementById('prodBrand').value = p.brand;
+          document.getElementById('prodDesc').value = p.description;
+          document.getElementById('prodCat').value = p.category;
+          document.getElementById('prodPrice').value = p.price;
+          document.getElementById('prodDiscPrice').value = p.discountPrice || '';
+          document.getElementById('prodStock').value = p.stock;
+          document.getElementById('prodImages').value = (p.images || []).join('\n');
+          document.getElementById('prodSpecs').value = (p.specifications || []).map(s => `${s.key}: ${s.value}`).join('\n');
+          document.getElementById('prodTags').value = (p.tags || []).join(', ');
+          document.getElementById('prodFeatured').checked = p.isFeatured;
+          document.getElementById('prodActive').checked = p.isActive;
+        }
+      } else {
+        document.getElementById('editProductId').value = '';
+        ['prodName','prodBrand','prodDesc','prodPrice','prodDiscPrice','prodStock','prodImages','prodSpecs','prodTags'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('prodCat').value = '';
+        document.getElementById('prodFeatured').checked = false;
+      }
+      document.getElementById('productModal').classList.add('open');
+    }
+    function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
+
+    async function saveProduct() {
+      const name = document.getElementById('prodName').value.trim();
+      const brand = document.getElementById('prodBrand').value.trim();
+      const description = document.getElementById('prodDesc').value.trim();
+      const category = document.getElementById('prodCat').value;
+      const price = Number(document.getElementById('prodPrice').value);
+      const discountPrice = Number(document.getElementById('prodDiscPrice').value) || 0;
+      const stock = Number(document.getElementById('prodStock').value) || 0;
+      const imagesRaw = document.getElementById('prodImages').value.trim();
+      const specsRaw = document.getElementById('prodSpecs').value.trim();
+      const tagsRaw = document.getElementById('prodTags').value.trim();
+      const isFeatured = document.getElementById('prodFeatured').checked;
+      const isActive = document.getElementById('prodActive')?.checked !== false;
+
+      if (!name || !brand || !description || !category || !price) return showToast('Fill all required fields', 'warning');
+
+      const images = imagesRaw ? imagesRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const specifications = specsRaw ? specsRaw.split('\n').map(line => {
+        const [k, ...v] = line.split(':');
+        return k && v.length ? { key: k.trim(), value: v.join(':').trim() } : null;
+      }).filter(Boolean) : [];
+      const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      const payload = { name, brand, description, category, price, discountPrice, stock, images, specifications, tags, isFeatured, isActive };
+
+      const btn = document.getElementById('saveProductBtn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      try {
+        if (editingProductId) {
+          await api.put(`/admin/products/${editingProductId}`, payload, true);
+          showToast('Product updated! ✅', 'success');
+        } else {
+          await api.post('/admin/products', payload, true);
+          showToast('Product added! 🎉', 'success');
+        }
+        closeProductModal();
+        loadAdminProducts(prodPage);
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save Product';
+      }
+    }
+
+    // Delete
+    let deleteProductId = null;
+    function openDeleteModal(id) { deleteProductId = id; document.getElementById('deleteModal').classList.add('open'); }
+    function closeDeleteModal() { deleteProductId = null; document.getElementById('deleteModal').classList.remove('open'); }
+    async function confirmDelete() {
+      if (!deleteProductId) return;
+      try {
+        await api.delete(`/admin/products/${deleteProductId}`, true);
+        showToast('Product deleted', 'info');
+        closeDeleteModal();
+        loadAdminProducts(prodPage);
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // ── ORDERS ──
+    let currentOrderFilter = '';
+    async function loadAdminOrders(status = currentOrderFilter) {
+      currentOrderFilter = status;
+      try {
+        const url = `/admin/orders?limit=50${status ? '&status=' + status : ''}`;
+        const data = await api.get(url, true);
+        const tbody = document.getElementById('ordersTableBody');
+        if (!data.orders.length) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:#9e9e9e">No orders found</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.orders.map(o => `
+          <tr>
+            <td style="font-family:monospace;font-size:12px">#${o._id.slice(-8).toUpperCase()}</td>
+            <td>${o.user?.name || 'N/A'}<div style="font-size:12px;color:#9e9e9e">${o.user?.email || ''}</div></td>
+            <td>${o.items.length} item${o.items.length > 1 ? 's' : ''}</td>
+            <td style="font-weight:700">${formatPrice(o.totalAmount)}</td>
+            <td><span class="badge ${o.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}">${o.paymentStatus} · ${o.paymentMethod}</span></td>
+            <td><span class="badge ${getStatusBadge(o.orderStatus)}">${o.orderStatus}</span></td>
+            <td style="font-size:12px">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
+            <td>
+              <select style="padding:4px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px" onchange="updateOrderStatus('${o._id}',this.value)">
+                <option value="">Change Status</option>
+                <option>Processing</option><option>Confirmed</option>
+                <option>Shipped</option><option>Out for Delivery</option>
+                <option>Delivered</option><option>Cancelled</option>
+              </select>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    function filterOrders(status, el) {
+      document.querySelectorAll('#page-orders .sort-pill').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      loadAdminOrders(status);
+    }
+
+    async function updateOrderStatus(orderId, status) {
+      if (!status) return;
+      try {
+        await api.put(`/admin/orders/${orderId}/status`, { orderStatus: status }, true);
+        showToast(`Order status updated to "${status}"`, 'success');
+        loadAdminOrders(currentOrderFilter);
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // ── USERS ──
+    async function loadUsers() {
+      try {
+        const users = await api.get('/admin/users', true);
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = users.map(u => `
+          <tr>
+            <td><div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:700">${u.name.charAt(0).toUpperCase()}</div></td>
+            <td style="font-weight:600">${u.name}</td>
+            <td>${u.email}</td>
+            <td><span class="badge ${u.role === 'admin' ? 'badge-danger' : 'badge-success'}">${u.role}</span></td>
+            <td>${u.phone || '—'}</td>
+            <td style="font-size:12px;color:#9e9e9e">${new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
+          </tr>
+        `).join('');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // ── PAGINATION HELPER ──
+    function renderPagination(containerId, totalPages, current, onPage) {
+      const el = document.getElementById(containerId);
+      if (!el || totalPages <= 1) { if(el) el.innerHTML = ''; return; }
+      el.innerHTML = '';
+      if (current > 1) el.innerHTML += `<button class="page-btn" onclick="(${onPage})(${current-1})">‹</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        el.innerHTML += `<button class="page-btn ${i===current?'active':''}" onclick="(${onPage})(${i})">${i}</button>`;
+      }
+      if (current < totalPages) el.innerHTML += `<button class="page-btn" onclick="(${onPage})(${current+1})">›</button>`;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+
+    // Init
+    loadDashboard();
+  </script>
+</body>
+</html>

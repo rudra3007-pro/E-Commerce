@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopKart — Premium Online Marketplace</title>
+  <meta name="description" content="Discover curated products at unbeatable prices. Electronics, fashion, home & kitchen and more.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app-header"></div>
+  <div id="app-nav"></div>
+
+  <!-- HERO CAROUSEL -->
+  <section class="hero" id="heroSection">
+    <div class="hero-slides" id="heroSlides"></div>
+    <button class="carousel-btn carousel-prev" onclick="changeSlide(-1)">‹</button>
+    <button class="carousel-btn carousel-next" onclick="changeSlide(1)">›</button>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </section>
+
+  <main class="container" style="padding-top:48px;padding-bottom:64px">
+
+    <!-- DEALS OF THE DAY -->
+    <section class="deals-strip">
+      <div class="deals-strip-head">
+        <div>
+          <div class="deals-label">🔥 Flash Deals</div>
+          <div class="deals-title">Today's Best Offers</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="timer-wrap">
+            <div class="timer-label">Ends in</div>
+            <div class="timer-seg"><div class="timer-num" id="timerH">00</div><div class="timer-unit">hrs</div></div>
+            <div class="timer-colon">:</div>
+            <div class="timer-seg"><div class="timer-num" id="timerM">00</div><div class="timer-unit">min</div></div>
+            <div class="timer-colon">:</div>
+            <div class="timer-seg"><div class="timer-num" id="timerS">00</div><div class="timer-unit">sec</div></div>
+          </div>
+          <button class="deals-see-all" onclick="goTo('shop.html')">View all →</button>
+        </div>
+      </div>
+      <div class="products-grid" id="dealsGrid">
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+      </div>
+    </section>
+
+    <!-- SHOP BY CATEGORY -->
+    <section class="mt-4">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Browse</div>
+          <div class="sec-title">Shop by Category</div>
+        </div>
+      </div>
+      <div class="cat-cards-grid" id="categoryGrid"></div>
+    </section>
+
+    <!-- FEATURED -->
+    <section class="mt-4">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Handpicked</div>
+          <div class="sec-title sec-title-serif">Featured Collection</div>
+        </div>
+        <button class="see-all" onclick="goTo('shop.html?featured=true')">View all →</button>
+      </div>
+      <div class="products-grid" id="featuredGrid">
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+      </div>
+    </section>
+
+    <!-- LATEST ARRIVALS -->
+    <section class="mt-4">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">New In</div>
+          <div class="sec-title">Latest Arrivals</div>
+        </div>
+        <button class="see-all" onclick="goTo('shop.html')">View all →</button>
+      </div>
+      <div class="products-grid" id="latestGrid">
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
+      </div>
+    </section>
+
+    <!-- VALUE PROPS -->
+    <section class="mt-4">
+      <div class="props-grid">
+        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
+          <div class="prop-ico">🚚</div>
+          <div>
+            <div class="prop-title">Free Shipping</div>
+            <div class="prop-desc">On orders above ₹500</div>
+          </div>
+        </div>
+        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
+          <div class="prop-ico">🔄</div>
+          <div>
+            <div class="prop-title">Easy Returns</div>
+            <div class="prop-desc">30-day hassle-free returns</div>
+          </div>
+        </div>
+        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
+          <div class="prop-ico">🔒</div>
+          <div>
+            <div class="prop-title">Secure Payment</div>
+            <div class="prop-desc">Bank-grade encryption</div>
+          </div>
+        </div>
+        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
+          <div class="prop-ico">⭐</div>
+          <div>
+            <div class="prop-title">Authentic Products</div>
+            <div class="prop-desc">100% verified quality</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="app-footer"></div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // ── Hero Slides ──
+    const slides = [
+      {
+        bg: 'linear-gradient(135deg, #0a0a0a 0%, #1c1c3a 100%)',
+        eyebrow: 'New Arrivals',
+        title: 'Discover\n<em>Tomorrow\'s</em>\nTech Today',
+        sub: 'Premium electronics, unbeatable prices',
+        cta: 'Shop Electronics',
+        cta2: 'View Deals',
+        link: '/shop.html?category=Electronics',
+        icon: '📱',
+        iconRight: true,
+      },
+      {
+        bg: 'linear-gradient(135deg, #1a0a2e 0%, #2d1060 100%)',
+        eyebrow: 'Fashion Week',
+        title: 'Style That\nSpeaks\n<em>Volumes</em>',
+        sub: 'Curated fashion from top brands',
+        cta: 'Shop Fashion',
+        cta2: 'New Collections',
+        link: '/shop.html?category=Fashion',
+        icon: '👗',
+      },
+      {
+        bg: 'linear-gradient(135deg, #0a1a0a 0%, #0d3318 100%)',
+        eyebrow: 'Home Collection',
+        title: 'Transform\nYour\n<em>Living Space</em>',
+        sub: 'Everything to make your home beautiful',
+        cta: 'Shop Home',
+        cta2: 'Explore More',
+        link: '/shop.html?category=Home+%26+Kitchen',
+        icon: '🏠',
+      },
+    ];
+    let curSlide = 0;
+    let slideTimer;
+
+    function renderHero() {
+      document.getElementById('heroSlides').innerHTML = slides.map((s, i) => `
+        <div class="hero-slide" style="background:${s.bg}">
+          <div class="hero-slide-overlay"></div>
+          <div class="hero-content">
+            <div style="max-width:540px">
+              <div class="hero-eyebrow">${s.eyebrow}</div>
+              <h1 class="hero-title">${s.title.replace(/\n/g,'<br>').replace(/(<em>.*?<\/em>)/g,'$1')}</h1>
+              <p class="hero-subtitle">${s.sub}</p>
+              <div class="hero-actions">
+                <a href="${s.link}" class="btn-hero-primary">${s.cta} →</a>
+                <a href="/shop.html" class="btn-hero-secondary">${s.cta2}</a>
+              </div>
+            </div>
+            <div style="font-size:160px;opacity:0.15;position:absolute;right:80px;top:50%;transform:translateY(-50%);pointer-events:none">${s.icon}</div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('carouselDots').innerHTML = slides.map((_,i) =>
+        `<div class="c-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`
+      ).join('');
+    }
+
+    function goToSlide(n) {
+      curSlide = (n + slides.length) % slides.length;
+      document.getElementById('heroSlides').style.transform = `translateX(-${curSlide * 100}%)`;
+      document.querySelectorAll('.c-dot').forEach((d,i) => d.classList.toggle('active', i === curSlide));
+    }
+    function changeSlide(dir) { clearInterval(slideTimer); goToSlide(curSlide + dir); startAuto(); }
+    function startAuto() { slideTimer = setInterval(() => goToSlide(curSlide + 1), 5000); }
+
+    // ── Categories ──
+    function renderCategories() {
+      document.getElementById('categoryGrid').innerHTML = CATEGORIES.map(c => `
+        <div class="cat-card" onclick="window.location.href='/shop.html?category=${encodeURIComponent(c.name)}'">
+          <span class="cat-card-icon">${c.icon}</span>
+          <div class="cat-card-name">${c.name}</div>
+        </div>
+      `).join('');
+    }
+
+    // ── Load Products ──
+    async function loadProducts() {
+      try {
+        const [dealsRes, featRes, latestRes] = await Promise.all([
+          api.get('/products?sort=price_asc&limit=6'),
+          api.get('/products?featured=true&limit=6'),
+          api.get('/products?limit=8'),
+        ]);
+
+        const dealsGrid = document.getElementById('dealsGrid');
+        dealsGrid.innerHTML = dealsRes.products.length
+          ? dealsRes.products.map(buildProductCard).join('')
+          : '<p style="color:rgba(255,255,255,0.4);padding:20px;grid-column:1/-1">Add products from the Admin panel to see deals here.</p>';
+
+        const featGrid = document.getElementById('featuredGrid');
+        featGrid.innerHTML = featRes.products.length
+          ? featRes.products.map(buildProductCard).join('')
+          : '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⭐</div><h3 class="empty-title">No featured products</h3><p class="empty-subtitle">Mark products as featured in the Admin panel.</p></div>';
+
+        const latestGrid = document.getElementById('latestGrid');
+        latestGrid.innerHTML = latestRes.products.length
+          ? latestRes.products.map(buildProductCard).join('')
+          : `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><h3 class="empty-title">No products yet</h3><p class="empty-subtitle">Start by adding your first product in Admin.</p><button class="btn-auth" onclick="goTo('admin.html')" style="max-width:200px;padding:10px 24px;margin-top:4px">Open Admin →</button></div>`;
+      } catch (err) { console.error('Load error:', err); }
+    }
+
+    // ── Timer ──
+    function startTimer() {
+      const end = new Date(); end.setHours(23, 59, 59, 0);
+      const tick = () => {
+        const diff = end - new Date();
+        if (diff <= 0) return;
+        document.getElementById('timerH').textContent = String(Math.floor(diff/3600000)).padStart(2,'0');
+        document.getElementById('timerM').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+        document.getElementById('timerS').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+      };
+      tick(); setInterval(tick, 1000);
+    }
+
+    // ── Init ──
+    document.getElementById('app-header').innerHTML = buildHeader();
+    document.getElementById('app-nav').innerHTML = buildCategoryNav();
+    document.getElementById('app-footer').innerHTML = buildFooter();
+    renderHero();
+    startAuto();
+    renderCategories();
+    loadProducts();
+    startTimer();
+    updateCartCount();
+  </script>
+</body>
+</html>

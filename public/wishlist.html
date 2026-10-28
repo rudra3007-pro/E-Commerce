@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist – ShopKart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app-header"></div>
+  <div id="app-nav"></div>
+  <main class="container" style="padding:16px 16px 64px">
+    <h1 style="font-size:22px;font-weight:800;margin-bottom:16px">❤️ My Wishlist</h1>
+    <div id="wishlistWrap">
+      <div class="loader"><div class="spinner"></div></div>
+    </div>
+  </main>
+  <div id="app-footer"></div>
+  <script src="/js/api.js"></script>
+  <script>
+    document.getElementById('app-header').innerHTML = buildHeader();
+    document.getElementById('app-nav').innerHTML = buildCategoryNav();
+    document.getElementById('app-footer').innerHTML = buildFooter();
+
+    async function loadWishlist() {
+      if (!getToken()) {
+        document.getElementById('wishlistWrap').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">❤️</div>
+            <h3 class="empty-title">Please login to see your wishlist</h3>
+            <a href="/login.html" class="btn-checkout" style="display:inline-block;padding:12px 32px;text-decoration:none;margin-top:16px">Login Now</a>
+          </div>`;
+        return;
+      }
+      try {
+        const wishlist = await api.get('/wishlist', true);
+        if (!wishlist || wishlist.length === 0) {
+          document.getElementById('wishlistWrap').innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🤍</div>
+              <h3 class="empty-title">Your wishlist is empty</h3>
+              <p class="empty-subtitle">Save items you love by clicking the heart icon</p>
+              <a href="/shop.html" class="btn-checkout" style="display:inline-block;padding:12px 32px;text-decoration:none;margin-top:16px">Explore Products</a>
+            </div>`;
+          return;
+        }
+        document.getElementById('wishlistWrap').innerHTML = `
+          <p style="margin-bottom:16px;color:#717171">${wishlist.length} item${wishlist.length>1?'s':''} saved</p>
+          <div class="wishlist-grid">
+            ${wishlist.map(p => buildWishlistCard(p)).join('')}
+          </div>`;
+      } catch (err) {
+        document.getElementById('wishlistWrap').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>${err.message}</h3></div>`;
+      }
+    }
+
+    function buildWishlistCard(p) {
+      const finalPrice = p.discountPrice > 0 ? p.discountPrice : p.price;
+      const discPct = p.discountPrice > 0 ? Math.round(((p.price - p.discountPrice) / p.price) * 100) : 0;
+      return `
+        <div class="product-card">
+          <div class="product-img-wrap" onclick="viewProduct('${p._id}')" style="cursor:pointer">
+            ${p.images && p.images[0]
+              ? `<img src="${p.images[0]}" alt="${p.name}" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+              : ''}
+            <div class="product-img-placeholder" ${p.images && p.images[0] ? 'style="display:none"' : ''}>📦</div>
+            ${discPct > 0 ? `<span class="product-badge">${discPct}% OFF</span>` : ''}
+          </div>
+          <div class="product-info" onclick="viewProduct('${p._id}')" style="cursor:pointer">
+            <div class="product-brand">${p.brand}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-price-wrap">
+              <span class="product-price">${formatPrice(finalPrice)}</span>
+              ${p.discountPrice > 0 ? `<span class="product-original">${formatPrice(p.price)}</span>` : ''}
+            </div>
+          </div>
+          <div class="product-card-actions">
+            <button class="btn-cart" onclick="moveToCart('${p._id}')">🛒 Move to Cart</button>
+            <button onclick="removeWishlist('${p._id}',this)" style="padding:8px;background:#fce4ec;color:#b71c1c;border:none;border-radius:4px;cursor:pointer;font-size:16px;transition:all .2s">🗑</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function moveToCart(productId) {
+      try {
+        await addToCart(null, productId);
+        await api.post(`/wishlist/${productId}`, {}, true);
+        showToast('Moved to cart 🛒', 'success');
+        loadWishlist();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function removeWishlist(productId, btn) {
+      try {
+        await toggleWishlist(null, productId, btn);
+        setTimeout(loadWishlist, 300);
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    loadWishlist();
+    updateCartCount();
+  </script>
+</body>
+</html>
