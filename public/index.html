@@ -96,32 +96,32 @@
     <!-- VALUE PROPS -->
     <section class="mt-4">
       <div class="props-grid">
-        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
-          <div class="prop-ico">🚚</div>
+        <div class="prop-card">
+          <div class="prop-ico">🌸</div>
           <div>
-            <div class="prop-title">Free Shipping</div>
-            <div class="prop-desc">On orders above ₹500</div>
+            <div class="prop-title">Handmade with Love</div>
+            <div class="prop-desc">100% crafted petal by petal</div>
           </div>
         </div>
-        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
-          <div class="prop-ico">🔄</div>
+        <div class="prop-card">
+          <div class="prop-ico">🎀</div>
           <div>
-            <div class="prop-title">Easy Returns</div>
-            <div class="prop-desc">30-day hassle-free returns</div>
+            <div class="prop-title">For Someone Special</div>
+            <div class="prop-desc">Complimentary gift tag & card</div>
           </div>
         </div>
-        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
-          <div class="prop-ico">🔒</div>
+        <div class="prop-card">
+          <div class="prop-ico">📦</div>
           <div>
-            <div class="prop-title">Secure Payment</div>
-            <div class="prop-desc">Bank-grade encryption</div>
+            <div class="prop-title">Keepsake Packaging</div>
+            <div class="prop-desc">Protective tulle & satin box</div>
           </div>
         </div>
-        <div class="prop-card" style="background:var(--surface-container-lowest);padding:20px;border-radius:var(--radius-md)">
-          <div class="prop-ico">⭐</div>
+        <div class="prop-card">
+          <div class="prop-ico">✨</div>
           <div>
-            <div class="prop-title">Authentic Products</div>
-            <div class="prop-desc">100% verified quality</div>
+            <div class="prop-title">Everlasting Blooms</div>
+            <div class="prop-desc">Never wilts, stays forever</div>
           </div>
         </div>
       </div>
@@ -135,35 +135,37 @@
     // ── Hero Slides ──
     const slides = [
       {
-        bg: 'linear-gradient(135deg, #0a0a0a 0%, #1c1c3a 100%)',
-        eyebrow: 'New Arrivals',
-        title: 'Discover\n<em>Tomorrow\'s</em>\nTech Today',
-        sub: 'Premium electronics, unbeatable prices',
-        cta: 'Shop Electronics',
-        cta2: 'View Deals',
-        link: '/shop.html?category=Electronics',
-        icon: '📱',
-        iconRight: true,
+        bg: 'linear-gradient(135deg, #FFF9F5 0%, #FBE7E7 60%, #F5CFD6 100%)',
+        eyebrow: 'Handmade Bouquets & Gifts',
+        title: 'Delulu\n<em>Craftss ♡</em>',
+        tagline: 'Made by hand, made with love ♡',
+        sub: 'Everlasting satin ribbon roses, sunflowers, chamomile daisies, and delicate bouquets crafted for someone special.',
+        cta: 'Explore Bouquets 💐',
+        cta2: 'View Catalogue',
+        link: '/shop.html?category=Handmade+Bouquets',
+        icon: '💐',
       },
       {
-        bg: 'linear-gradient(135deg, #1a0a2e 0%, #2d1060 100%)',
-        eyebrow: 'Fashion Week',
-        title: 'Style That\nSpeaks\n<em>Volumes</em>',
-        sub: 'Curated fashion from top brands',
-        cta: 'Shop Fashion',
-        cta2: 'New Collections',
-        link: '/shop.html?category=Fashion',
-        icon: '👗',
+        bg: 'linear-gradient(135deg, #FFF9F5 0%, #F8DFE3 60%, #EAD8C8 100%)',
+        eyebrow: 'For Someone Special',
+        title: 'Gifts That\n<em>Stay Forever</em>',
+        tagline: 'Tied with satin ribbons & personalized cards',
+        sub: 'Custom gift hampers, scented candles, keepsake frames, and handmade hair accessories created to bring heartfelt joy.',
+        cta: 'Shop Gift Hampers 🎁',
+        cta2: 'Personalized Gifts',
+        link: '/shop.html?category=Gift+Hampers+%26+Boxes',
+        icon: '🎀',
       },
       {
-        bg: 'linear-gradient(135deg, #0a1a0a 0%, #0d3318 100%)',
-        eyebrow: 'Home Collection',
-        title: 'Transform\nYour\n<em>Living Space</em>',
-        sub: 'Everything to make your home beautiful',
-        cta: 'Shop Home',
-        cta2: 'Explore More',
-        link: '/shop.html?category=Home+%26+Kitchen',
-        icon: '🏠',
+        bg: 'linear-gradient(135deg, #FFF9F5 0%, #FCF1E6 60%, #FBE7E7 100%)',
+        eyebrow: 'Everlasting Blooms',
+        title: 'Sunflower &\n<em>Tulip Blooms</em>',
+        tagline: 'No wilting. No fading. Pure handmade beauty.',
+        sub: 'Hand-stitched crochet florals and luminous satin flower arrangements wrapped in airy layered tulle.',
+        cta: 'Browse Blooms 🌻',
+        cta2: 'Explore All',
+        link: '/shop.html',
+        icon: '🌻',
       },
     ];
     let curSlide = 0;
@@ -172,12 +174,27 @@
     function renderHero() {
       document.getElementById('heroSlides').innerHTML = slides.map((s, i) => `
         <div class="hero-slide" style="background:${s.bg}">
-          <div class="hero-slide-overlay"></div>
           <div class="hero-content">
-            <div style="max-width:540px">
+            <div style="max-width:560px">
+              <div class="logo-stamp" style="font-size:11px;margin-bottom:10px">🎀 MADE BY HAND • MADE WITH LOVE</div>
               <div class="hero-eyebrow">${s.eyebrow}</div>
-              <h1 class="hero-title">${s.title.replace(/\n/g,'<br>').replace(/(<em>.*?<\/em>)/g,'$1')}</h1>
+              <h1 class="hero-title">${s.title.replace(/\n/g,'<br>')}</h1>
+              <div class="hero-tagline">${s.tagline}</div>
               <p class="hero-subtitle">${s.sub}</p>
+              <div class="hero-actions">
+                <a href="${s.link}" class="btn-hero-primary">${s.cta}</a>
+                <a href="/shop.html" class="btn-hero-secondary">${s.cta2}</a>
+              </div>
+            </div>
+            <div class="hero-visual-card">
+              <div class="gift-tag">for someone special ♡</div>
+              <div style="font-size:110px;margin:18px 0;animation:floatGentle 4s ease-in-out infinite">${s.icon}</div>
+              <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--text-main);text-align:center">Delulu Craftss</div>
+              <div style="font-family:var(--font-editorial);font-size:15px;color:var(--rose-pink-dark);font-style:italic">Catalogue 2024</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
               <div class="hero-actions">
                 <a href="${s.link}" class="btn-hero-primary">${s.cta} →</a>
                 <a href="/shop.html" class="btn-hero-secondary">${s.cta2}</a>

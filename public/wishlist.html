@@ -9,8 +9,11 @@
 <body>
   <div id="app-header"></div>
   <div id="app-nav"></div>
-  <main class="container" style="padding:16px 16px 64px">
-    <h1 style="font-size:22px;font-weight:800;margin-bottom:16px">❤️ My Wishlist</h1>
+  <main class="container" style="padding:24px 16px 64px">
+    <div style="margin-bottom:24px;border-bottom:1px solid var(--border-soft);padding-bottom:16px">
+      <div style="font-family:var(--font-cursive);font-size:26px;color:var(--rose-accent)">Saved with Love ♡</div>
+      <h1 style="font-family:var(--font-serif);font-size:28px;color:var(--text-primary);margin-top:-6px">My Wishlist</h1>
+    </div>
     <div id="wishlistWrap">
       <div class="loader"><div class="spinner"></div></div>
     </div>
@@ -45,7 +48,7 @@
           return;
         }
         document.getElementById('wishlistWrap').innerHTML = `
-          <p style="margin-bottom:16px;color:#717171">${wishlist.length} item${wishlist.length>1?'s':''} saved</p>
+          <p style="margin-bottom:16px;color:var(--text-muted);font-size:14px">${wishlist.length} item${wishlist.length>1?'s':''} saved for someone special ♡</p>
           <div class="wishlist-grid">
             ${wishlist.map(p => buildWishlistCard(p)).join('')}
           </div>`;
@@ -63,7 +66,7 @@
             ${p.images && p.images[0]
               ? `<img src="${p.images[0]}" alt="${p.name}" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
               : ''}
-            <div class="product-img-placeholder" ${p.images && p.images[0] ? 'style="display:none"' : ''}>📦</div>
+            <div class="product-img-placeholder" ${p.images && p.images[0] ? 'style="display:none"' : ''}>🌸</div>
             ${discPct > 0 ? `<span class="product-badge">${discPct}% OFF</span>` : ''}
           </div>
           <div class="product-info" onclick="viewProduct('${p._id}')" style="cursor:pointer">
@@ -75,8 +78,8 @@
             </div>
           </div>
           <div class="product-card-actions">
-            <button class="btn-cart" onclick="moveToCart('${p._id}')">🛒 Move to Cart</button>
-            <button onclick="removeWishlist('${p._id}',this)" style="padding:8px;background:#fce4ec;color:#b71c1c;border:none;border-radius:4px;cursor:pointer;font-size:16px;transition:all .2s">🗑</button>
+            <button class="btn-cart" onclick="moveToCart('${p._id}')">🎀 Move to Cart</button>
+            <button onclick="removeWishlist('${p._id}',this)" style="padding:10px 14px;background:var(--pastel-pink);color:var(--rose-pink);border:1px solid var(--blush-pink);border-radius:var(--radius-pill);cursor:pointer;font-size:15px;transition:all .2s" title="Remove">✕</button>
           </div>
         </div>
       `;

@@ -119,7 +119,7 @@ function buildProductCard(p) {
         ${p.images?.[0]
           ? `<img src="${p.images[0]}" alt="${p.name}" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
           : ''}
-        <div class="product-img-placeholder" ${p.images?.[0] ? 'style="display:none"' : ''}>📦</div>
+        <div class="product-img-placeholder" ${p.images?.[0] ? 'style="display:none"' : ''}>🌸</div>
         ${discPct > 0 ? `<span class="product-badge">−${discPct}%</span>` : ''}
         <button class="wishlist-btn ${isWished ? 'active' : ''}"
           onclick="toggleWishlist(event,'${p._id}',this)"
@@ -128,11 +128,11 @@ function buildProductCard(p) {
         </button>
       </div>
       <div class="product-info">
-        <div class="product-brand">${p.brand}</div>
+        <div class="product-brand">🎀 ${p.brand || 'Delulu Crafts'}</div>
         <div class="product-name">${p.name}</div>
         <div class="product-rating-row">
-          <span class="r-badge"><span class="star">★</span> ${p.ratings || 0}</span>
-          <span class="r-count">(${p.numReviews || 0})</span>
+          <span class="r-badge"><span class="star">★</span> ${p.ratings || '5.0'}</span>
+          <span class="r-count">(${p.numReviews || 0} reviews)</span>
         </div>
         <div class="product-price-row">
           <span class="product-price">${formatPrice(finalPrice)}</span>
@@ -151,16 +151,19 @@ function buildProductCard(p) {
 // CATEGORIES DATA
 // ============================================
 const CATEGORIES = [
+  { icon: '💐', name: 'Handmade Bouquets' },
+  { icon: '🎀', name: 'Ribbon & Satin Flowers' },
+  { icon: '🧶', name: 'Crochet Floral' },
+  { icon: '🎁', name: 'Gift Hampers & Boxes' },
+  { icon: '✨', name: 'Personalized Keepsakes' },
+  { icon: '🕯️', name: 'Scented Candles' },
+  { icon: '🌸', name: 'Resin & Art Decor' },
+  { icon: '🎀', name: 'Hair Accessories' },
+  { icon: '💌', name: 'Greeting Cards & Letters' },
   { icon: '📱', name: 'Electronics' },
   { icon: '👗', name: 'Fashion' },
   { icon: '🏠', name: 'Home & Kitchen' },
-  { icon: '📚', name: 'Books' },
-  { icon: '⚽', name: 'Sports' },
-  { icon: '✨', name: 'Beauty' },
-  { icon: '🧸', name: 'Toys' },
-  { icon: '🚗', name: 'Automotive' },
-  { icon: '🛒', name: 'Grocery' },
-  { icon: '📦', name: 'Other' },
+  { icon: '📚', name: 'Books' }
 ];
 
 // ============================================
@@ -172,11 +175,12 @@ function buildHeader(activePage = '') {
     <header class="header">
       <div class="header-inner">
         <a href="/" class="logo">
-          <div class="logo-main">DeluluCrafts</div>
-          <div class="logo-sub">Artisan & Curated Goods</div>
+          <div class="logo-stamp">🎀 Made by Hand • Made with Love</div>
+          <div class="logo-main">Delulu <span class="logo-cursive">Craftss <span class="logo-heart">♡</span></span></div>
+          <div class="logo-sub">Handmade Bouquets & Gifts</div>
         </a>
         <div class="search-wrap">
-          <input type="text" id="globalSearch" placeholder="Search products, brands…"
+          <input type="text" id="globalSearch" placeholder="Search bouquets, ribbon flowers, gifts…"
             onkeydown="if(event.key==='Enter')doSearch()">
           <button onclick="doSearch()">🔍</button>
         </div>
@@ -188,7 +192,7 @@ function buildHeader(activePage = '') {
             ${user.role === 'admin' ? `<button class="h-btn" onclick="goTo('admin.html')"><span class="ico">⚙️</span><span>Admin</span></button>` : ''}
             <button class="h-btn" onclick="goTo('wishlist.html')"><span class="ico">♡</span><span>Saved</span></button>
             <button class="h-btn" id="userMenuTrigger" onclick="toggleUserMenu()">
-              <span style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--dark);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">
+              <span style="width:26px;height:26px;border-radius:50%;background:var(--rose-pink);color:#FFF9F5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">
                 ${user.name.charAt(0).toUpperCase()}
               </span>
               <span>${user.name.split(' ')[0]}</span>
@@ -197,7 +201,7 @@ function buildHeader(activePage = '') {
             <a href="/login.html" class="h-btn"><span class="ico">👤</span><span>Sign in</span></a>
           `}
           <button class="h-btn" onclick="goTo('cart.html')">
-            <span class="ico" style="position:relative">🛒<span class="cart-bubble cart-count">0</span></span>
+            <span class="ico" style="position:relative">🛍️<span class="cart-bubble cart-count">0</span></span>
             <span>Cart</span>
           </button>
         </nav>
@@ -210,8 +214,8 @@ function buildHeader(activePage = '') {
         <div class="user-menu-email">${user.email}</div>
       </div>
       <div class="user-menu-item" onclick="goTo('orders.html');closeUserMenu()">📦 My Orders</div>
-      <div class="user-menu-item" onclick="goTo('wishlist.html');closeUserMenu()">♡ Saved Items</div>
-      ${user.role === 'admin' ? `<div class="user-menu-item" onclick="goTo('admin.html')">⚙️ Admin Panel</div>` : ''}
+      <div class="user-menu-item" onclick="goTo('wishlist.html');closeUserMenu()">♡ Saved Wishlist</div>
+      ${user.role === 'admin' ? `<div class="user-menu-item" onclick="goTo('admin.html');closeUserMenu()">⚙️ Admin Dashboard</div>` : ''}
       <div class="user-menu-item danger" onclick="logout()">Sign Out</div>
     </div>` : ''}
   `;
@@ -272,37 +276,54 @@ function buildFooter() {
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand-area">
-              <div class="footer-brand">DeluluCrafts</div>
-              <div class="footer-brand-sub">Curated crafts & premium lifestyle goods — designed with imagination.</div>
+              <div class="footer-brand">
+                Delulu <span class="logo-cursive" style="font-size:30px">Craftss <span class="logo-heart">♡</span></span>
+              </div>
+              <div class="footer-brand-sub">
+                Handmade Bouquets & Personalized Gifts.<br>
+                <em style="font-family:var(--font-script);font-size:20px;color:var(--rose-pink);display:inline-block;margin-top:6px">Made by hand, made with love ♡</em>
+              </div>
+              <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+                <a href="https://instagram.com/delulu_craftss" target="_blank" class="footer-contact-item">
+                  <span>📸</span> <strong>@delulu_craftss</strong>
+                </a>
+                <a href="mailto:delulucraftss@gmail.com" class="footer-contact-item">
+                  <span>💌</span> <strong>delulucraftss@gmail.com</strong>
+                </a>
+              </div>
             </div>
             <div>
-              <div class="footer-col-title">Company</div>
-              <a class="footer-link">About Us</a>
-              <a class="footer-link">Careers</a>
-              <a class="footer-link">Press</a>
-              <a class="footer-link">Blog</a>
+              <div class="footer-col-title">Catalogue</div>
+              <a href="/shop.html?category=Handmade+Bouquets" class="footer-link">Handmade Bouquets</a>
+              <a href="/shop.html?category=Ribbon+%26+Satin+Flowers" class="footer-link">Ribbon Flowers</a>
+              <a href="/shop.html?category=Crochet+Floral" class="footer-link">Crochet Arrangements</a>
+              <a href="/shop.html?category=Gift+Hampers+%26+Boxes" class="footer-link">Gift Hampers</a>
+              <a href="/shop.html?category=Personalized+Keepsakes" class="footer-link">Keepsakes & Cards</a>
             </div>
             <div>
-              <div class="footer-col-title">Support</div>
-              <a class="footer-link">Help Centre</a>
-              <a class="footer-link">Track Order</a>
-              <a class="footer-link">Returns</a>
-              <a class="footer-link">Contact Us</a>
+              <div class="footer-col-title">Customer Care</div>
+              <a href="/orders.html" class="footer-link">Track Your Order</a>
+              <a href="/shop.html" class="footer-link">Care & Maintenance</a>
+              <a href="mailto:delulucraftss@gmail.com" class="footer-link">Custom Bouquet Inquiries</a>
+              <a href="/cart.html" class="footer-link">Delivery & Shipping</a>
             </div>
             <div>
-              <div class="footer-col-title">Follow Us</div>
-              <a class="footer-link">Instagram</a>
-              <a class="footer-link">Twitter / X</a>
-              <a class="footer-link">YouTube</a>
-              <a class="footer-link">LinkedIn</a>
+              <div class="footer-col-title">Small Business Love</div>
+              <div style="background:var(--pastel-pink);border:1px dashed var(--rose-pink);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px">
+                <div style="font-family:var(--font-script);font-size:22px;color:var(--rose-pink-dark)">for someone special ♡</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:4px">Each bloom is uniquely shaped, petal by petal, wrapped in delicate satin.</div>
+              </div>
+              <div class="footer-small-biz">✨ Thank you for supporting small business ♡</div>
             </div>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <div class="container flex-between" style="width:100%">
-          <div style="font-size:14px;font-weight:700;color:var(--primary)">DeluluCrafts</div>
-          <div class="footer-copy">© 2024 DeluluCrafts. All rights reserved.</div>
+        <div class="container flex-between" style="width:100%;flex-wrap:wrap;gap:12px">
+          <div style="font-family:var(--font-serif);font-size:14px;font-weight:700;color:var(--rose-pink-dark)">
+            Delulu Craftss ♡
+          </div>
+          <div class="footer-copy">© 2024 DeluluCrafts. Handcrafted with love. All rights reserved.</div>
         </div>
       </div>
     </footer>

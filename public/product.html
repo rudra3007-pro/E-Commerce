@@ -91,14 +91,14 @@
                 <span class="detail-original">${formatPrice(p.price)}</span>
                 <span class="detail-discount">${discPct}% off</span>
               ` : ''}
-              <div style="font-size:13px;color:#717171;margin-top:6px">+ Free shipping on orders above ₹500</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-top:6px">🚚 Free doorstep delivery on orders above ₹500 • Wrapped with satin ribbon 🎀</div>
             </div>
 
             <div class="offers-section">
-              <div class="offers-title">💳 Available Offers</div>
-              <div class="offer-item"><span class="offer-tag">Bank Offer</span> 10% instant discount on HDFC Credit Card</div>
-              <div class="offer-item"><span class="offer-tag">EMI</span> No Cost EMI on orders above ₹3,000</div>
-              <div class="offer-item"><span class="offer-tag">Exchange</span> Get up to ₹5,000 off on exchange</div>
+              <div class="offers-title">🎀 Floral Boutique Perks</div>
+              <div class="offer-item"><span class="offer-tag">Gift Tag</span> Complimentary "For someone special" calligraphy note</div>
+              <div class="offer-item"><span class="offer-tag">Handmade</span> 100% artisan handcrafted with love</div>
+              <div class="offer-item"><span class="offer-tag">Everlasting</span> Never withers, memories that stay forever</div>
             </div>
 
             <!-- Quantity -->
@@ -113,41 +113,41 @@
 
             <!-- Wishlist -->
             <button onclick="toggleWishlist(null,'${p._id}',this)" 
-              style="margin-bottom:16px;padding:8px 16px;border:1px solid var(--border);border-radius:4px;background:white;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px"
+              style="margin-bottom:18px;padding:10px 18px;border:1px solid var(--blush-pink);border-radius:var(--radius-pill);background:var(--pastel-pink);color:var(--text-primary);cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:8px;font-weight:500;transition:all var(--transition-fast)"
               class="${isWishlisted?'active':''}">
-              ${isWishlisted ? '❤️' : '🤍'} ${isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
+              ${isWishlisted ? '❤️' : '♡'} ${isWishlisted ? 'Saved to Wishlist' : 'Add to Wishlist'}
             </button>
 
             <!-- Description -->
             <div style="margin:20px 0">
-              <div style="font-weight:700;margin-bottom:8px">Description</div>
-              <p style="font-size:14px;color:#555;line-height:1.7">${p.description}</p>
+              <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:8px">About This Craft</div>
+              <p style="font-size:14.5px;color:var(--text-primary);opacity:0.85;line-height:1.8">${p.description}</p>
             </div>
 
             <!-- Specs -->
             ${p.specifications && p.specifications.length > 0 ? `
             <div style="margin:20px 0">
-              <div style="font-weight:700;margin-bottom:12px">Specifications</div>
-              <table style="width:100%;border-collapse:collapse">
+              <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:12px">Artisan Details</div>
+              <table style="width:100%;border-collapse:collapse;border:1px solid var(--border-soft);border-radius:var(--radius-sm);overflow:hidden">
                 ${p.specifications.map((s, i) => `
-                  <tr style="background:${i%2===0?'#f8f9fa':'white'}">
-                    <td style="padding:10px 16px;font-size:13px;color:#717171;width:40%;font-weight:500">${s.key}</td>
-                    <td style="padding:10px 16px;font-size:13px">${s.value}</td>
+                  <tr style="background:${i%2===0?'var(--cream-bg)':'#ffffff'}">
+                    <td style="padding:10px 16px;font-size:13px;color:var(--text-muted);width:40%;font-weight:500;border-bottom:1px solid var(--border-soft)">${s.key}</td>
+                    <td style="padding:10px 16px;font-size:13px;color:var(--text-primary);border-bottom:1px solid var(--border-soft)">${s.value}</td>
                   </tr>
                 `).join('')}
               </table>
             </div>` : ''}
 
             <!-- Delivery Info -->
-            <div style="background:#f0f7ff;border-radius:8px;padding:16px;margin-top:16px">
-              <div style="font-weight:700;margin-bottom:8px">🚚 Delivery</div>
-              <div style="font-size:13px;color:#555">
-                <div style="margin-bottom:4px">🏠 Enter PIN code for delivery ETA</div>
+            <div style="background:var(--pastel-pink);border:1px solid var(--blush-pink);border-radius:var(--radius-md);padding:18px;margin-top:20px">
+              <div style="font-family:var(--font-serif);font-weight:700;color:var(--text-primary);margin-bottom:8px;font-size:16px">🚚 Doorstep Gift Delivery</div>
+              <div style="font-size:13px;color:var(--text-muted)">
+                <div style="margin-bottom:6px">Enter pincode to check delivery timeline for this handmade piece:</div>
                 <div style="display:flex;gap:8px;margin-top:8px">
-                  <input type="text" placeholder="Enter Pincode" id="pincodeInput" maxlength="6" style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;width:120px">
-                  <button onclick="checkDelivery()" style="padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:4px;font-size:13px;cursor:pointer">Check</button>
+                  <input type="text" placeholder="Enter Pincode" id="pincodeInput" maxlength="6" style="padding:9px 14px;border:1px solid var(--border-soft);border-radius:var(--radius-pill);font-size:13px;width:140px;background:white">
+                  <button onclick="checkDelivery()" style="padding:9px 20px;background:var(--rose-pink);color:white;border:none;border-radius:var(--radius-pill);font-size:13px;font-weight:600;cursor:pointer">Check</button>
                 </div>
-                <div id="deliveryInfo" style="margin-top:8px;font-size:13px;color:#2e7d32"></div>
+                <div id="deliveryInfo" style="margin-top:10px;font-size:13px;color:var(--sage-green);font-weight:600"></div>
               </div>
             </div>
           </div>
@@ -155,22 +155,23 @@
           <!-- Sticky Actions -->
           <div class="product-actions-sticky">
             <button class="btn-lg btn-add-cart" onclick="addToCart(null,'${p._id}',selectedQty)" ${p.stock===0?'disabled':''}>
-              🛒 Add to Cart
+              🎀 Add to Cart
             </button>
             <button class="btn-lg btn-buy-now" onclick="buyNow(null,'${p._id}')" ${p.stock===0?'disabled':''}>
-              ⚡ Buy Now
+              💝 Order Now
             </button>
           </div>
         </div>
 
         <!-- Reviews -->
-        <div class="reviews-section" style="background:var(--card);border-radius:12px;padding:24px;margin-top:16px;border:1px solid var(--border-light)">
-          <h2 class="section-title" style="margin-bottom:24px">Ratings & Reviews</h2>
+        <div class="reviews-section" style="background:var(--card);border-radius:var(--radius-lg);padding:28px;margin-top:28px;border:1px solid var(--border-soft)">
+          <div style="font-family:var(--font-cursive);font-size:24px;color:var(--rose-accent)">Words of Appreciation ♡</div>
+          <h2 class="section-title" style="margin-bottom:24px;margin-top:-6px">Customer Reviews</h2>
           <div class="review-summary">
             <div>
               <div class="review-score">${p.ratings || 0}</div>
               <div class="stars-row">${renderStars(p.ratings)}</div>
-              <div style="font-size:13px;color:#717171">${p.numReviews} reviews</div>
+              <div style="font-size:13px;color:var(--text-muted)">${p.numReviews} heartfelt reviews</div>
             </div>
           </div>
           <div id="reviewsList">
@@ -180,22 +181,22 @@
                   <div class="review-header">
                     <div class="reviewer-avatar">${r.name.charAt(0).toUpperCase()}</div>
                     <div>
-                      <div style="font-weight:600;font-size:14px">${r.name}</div>
+                      <div style="font-weight:600;font-size:14px;color:var(--text-primary)">${r.name}</div>
                       <span class="review-rating-badge">★ ${r.rating}</span>
                     </div>
                   </div>
-                  <p class="review-comment">${r.comment}</p>
+                  <p class="review-comment" style="color:var(--text-primary);line-height:1.6">${r.comment}</p>
                   <div class="review-date">${new Date(r.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</div>
                 </div>
               `).join('')
-              : '<p class="text-muted" style="margin-bottom:16px">No reviews yet. Be the first to review!</p>'
+              : '<p class="text-muted" style="margin-bottom:16px">No reviews yet. Be the first to share your experience with this handmade bouquet!</p>'
             }
           </div>
 
           <!-- Add Review -->
           ${getToken() ? `
           <div class="add-review-form">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Write a Review</h3>
+            <h3 style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px">Write a Review</h3>
             <div class="form-group">
               <div class="form-label">Your Rating</div>
               <div class="star-picker" id="starPicker">
@@ -204,12 +205,12 @@
             </div>
             <div class="form-group">
               <label class="form-label">Your Review</label>
-              <textarea class="form-textarea" id="reviewComment" placeholder="Share your experience with this product..."></textarea>
+              <textarea class="form-textarea" id="reviewComment" placeholder="Share your experience with this craft..."></textarea>
             </div>
             <button class="btn-primary" onclick="submitReview()">Submit Review</button>
           </div>
-          ` : `<div style="padding:16px;background:#f0f7ff;border-radius:8px;text-align:center;font-size:14px">
-            <a href="/login.html" style="color:var(--primary);font-weight:600">Login</a> to write a review
+          ` : `<div style="padding:16px;background:var(--pastel-pink);border-radius:var(--radius-md);text-align:center;font-size:14px">
+            <a href="/login.html" style="color:var(--rose-pink);font-weight:600">Login</a> to write a review
           </div>`}
         </div>
       `;

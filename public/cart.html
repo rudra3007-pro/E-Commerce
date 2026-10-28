@@ -29,12 +29,12 @@
             <div class="checkout-step-num">1</div>
             <div class="checkout-step-label">Address</div>
           </div>
-          <div style="flex:1;height:2px;background:#e0e0e0;align-self:center"></div>
+          <div style="flex:1;height:2px;background:var(--border-soft);align-self:center"></div>
           <div class="checkout-step" id="step2Label">
             <div class="checkout-step-num">2</div>
             <div class="checkout-step-label">Payment</div>
           </div>
-          <div style="flex:1;height:2px;background:#e0e0e0;align-self:center"></div>
+          <div style="flex:1;height:2px;background:var(--border-soft);align-self:center"></div>
           <div class="checkout-step" id="step3Label">
             <div class="checkout-step-num">3</div>
             <div class="checkout-step-label">Confirm</div>
@@ -66,16 +66,16 @@
         <div id="checkoutStep2" style="display:none">
           <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">Payment Method</h3>
           <div style="display:flex;flex-direction:column;gap:12px">
-            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:2px solid var(--primary);border-radius:8px;cursor:pointer;background:var(--primary-light)">
-              <input type="radio" name="payment" value="COD" checked> 💵 Cash on Delivery
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:2px solid var(--rose-pink);border-radius:12px;cursor:pointer;background:var(--pastel-pink)">
+              <input type="radio" name="payment" value="COD" checked> 💵 Cash on Delivery (COD)
             </label>
-            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #e0e0e0;border-radius:8px;cursor:pointer">
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--border-soft);border-radius:12px;cursor:pointer;background:#FFFFFF">
               <input type="radio" name="payment" value="UPI"> 📱 UPI (GPay, PhonePe, Paytm)
             </label>
-            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #e0e0e0;border-radius:8px;cursor:pointer">
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--border-soft);border-radius:12px;cursor:pointer;background:#FFFFFF">
               <input type="radio" name="payment" value="Card"> 💳 Credit / Debit Card
             </label>
-            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #e0e0e0;border-radius:8px;cursor:pointer">
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--border-soft);border-radius:12px;cursor:pointer;background:#FFFFFF">
               <input type="radio" name="payment" value="NetBanking"> 🏦 Net Banking
             </label>
           </div>
