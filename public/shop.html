@@ -6,6 +6,11 @@
   <title>Shop – DeluluCrafts</title>
   <meta name="description" content="Browse all products on DeluluCrafts. Filter by category, price, rating and more.">
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
+    }
+  </script>
 </head>
 <body>
   <div id="app-header"></div>

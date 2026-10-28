@@ -3,11 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — DeluluCrafts</title>
+  <title>Sign In — DeluluCrafts ♡ Handmade Bouquets</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    // If already logged in, redirect straight to the store home page
+    if (localStorage.getItem('token')) {
+      window.location.replace('/');
+    }
+  </script>
 </head>
-<body>
-  <div class="auth-page">
+<body class="auth-body">
+  <!-- Subtle floating petals animation background -->
+  <div class="floating-petals" aria-hidden="true">
+    <span class="petal p1">🌸</span>
+    <span class="petal p2">✨</span>
+    <span class="petal p3">🌷</span>
+    <span class="petal p4">♡</span>
+    <span class="petal p5">🌸</span>
+    <span class="petal p6">🎀</span>
+    <span class="petal p7">✨</span>
+    <span class="petal p8">🌷</span>
+  </div>
+
+  <div class="auth-page animate-fade-in-up">
     <!-- Left branding panel -->
     <div class="auth-left">
       <div style="text-align:center;margin-bottom:40px">
@@ -38,34 +56,37 @@
     <!-- Right form panel -->
     <div class="auth-right">
       <div class="auth-form-card">
-        <h1 class="auth-form-title">Welcome back</h1>
-        <p class="auth-form-sub">Sign in to your DeluluCrafts account</p>
+        <div class="form-header-badge">WELCOME BACK ♡</div>
+        <h1 class="auth-form-title">Sign in to Store</h1>
+        <p class="auth-form-sub">Enter your details to explore artisan bouquets & gifts</p>
 
         <div class="err-box" id="errBox"></div>
 
         <form onsubmit="handleLogin(event)">
           <div class="form-group">
-            <label class="form-label" for="email">Email</label>
+            <label class="form-label" for="email">Email Address</label>
             <input class="form-input" type="email" id="email" placeholder="you@example.com" required autocomplete="email">
           </div>
           <div class="form-group">
             <label class="form-label" for="password">Password</label>
             <div style="position:relative">
               <input class="form-input" type="password" id="password" placeholder="••••••••" required style="padding-right:44px">
-              <button type="button" onclick="togglePass()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--muted)">Show</button>
+              <button type="button" onclick="togglePass()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:13px;color:var(--rose-pink);font-weight:600">Show</button>
             </div>
           </div>
-          <button class="btn-auth" type="submit" id="loginBtn">Sign In →</button>
+          <button class="btn-auth" type="submit" id="loginBtn">Enter Store →</button>
         </form>
 
         <div class="auth-demo-box">
-          <div class="auth-demo-title">Demo Admin</div>
+          <div class="auth-demo-title">⚡ Quick Demo Admin Access</div>
           <div class="auth-demo-cred">admin@delulucrafts.com / admin123</div>
-          <button class="btn-demo" onclick="demoLogin()">Use Demo Account</button>
+          <button class="btn-demo" type="button" onclick="demoLogin()">1-Click Demo Login</button>
         </div>
 
-        <div class="auth-link">Don't have an account? <a href="/register.html">Create one →</a></div>
-        <div class="auth-link" style="margin-top:8px"><a href="/">← Back to Store</a></div>
+        <div class="auth-link">Don't have an account? <a href="/register.html">Create one here →</a></div>
+        <div style="text-align:center;margin-top:16px;font-family:var(--font-cursive);font-size:18px;color:var(--rose-accent)">
+          Made by hand, made with love ♡
+        </div>
       </div>
     </div>
   </div>
@@ -82,33 +103,37 @@
     }
 
     async function handleLogin(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       const btn   = document.getElementById('loginBtn');
       const errEl = document.getElementById('errBox');
       errEl.style.display = 'none';
-      btn.disabled = true; btn.textContent = 'Signing in…';
+      btn.disabled = true; btn.textContent = 'Entering Store…';
       try {
         const data = await api.post('/auth/login', {
-          email:    document.getElementById('email').value,
+          email:    document.getElementById('email').value.trim(),
           password: document.getElementById('password').value,
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user',  JSON.stringify(data));
-        showToast(`Welcome back, ${data.name}!`, 'success');
+        // Also persist cookie for direct server routing
+        document.cookie = `token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
+
+        showToast(`Welcome back, ${data.name}! Opening store…`, 'success');
         setTimeout(() => {
           const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
           window.location.href = redirect;
-        }, 700);
+        }, 600);
       } catch (err) {
         errEl.textContent  = err.message;
         errEl.style.display = 'block';
-        btn.disabled = false; btn.textContent = 'Sign In →';
+        btn.disabled = false; btn.textContent = 'Enter Store →';
       }
     }
 
     function demoLogin() {
       document.getElementById('email').value    = 'admin@delulucrafts.com';
       document.getElementById('password').value = 'admin123';
+      handleLogin(null);
     }
   </script>
 </body>

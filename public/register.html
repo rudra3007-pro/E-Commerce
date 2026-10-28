@@ -3,11 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register — DeluluCrafts</title>
+  <title>Register — DeluluCrafts ♡ Handmade Bouquets</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    if (localStorage.getItem('token')) {
+      window.location.replace('/');
+    }
+  </script>
 </head>
-<body>
-  <div class="auth-page">
+<body class="auth-body">
+  <!-- Subtle floating petals animation background -->
+  <div class="floating-petals" aria-hidden="true">
+    <span class="petal p1">🌸</span>
+    <span class="petal p2">✨</span>
+    <span class="petal p3">🌷</span>
+    <span class="petal p4">♡</span>
+    <span class="petal p5">🌸</span>
+    <span class="petal p6">🎀</span>
+  </div>
+
+  <div class="auth-page animate-fade-in-up">
     <div class="auth-left">
       <div style="text-align:center;margin-bottom:40px">
         <div class="logo-stamp" style="justify-content:center;margin-bottom:8px">🎀 MADE BY HAND • MADE WITH LOVE</div>
@@ -23,20 +38,21 @@
     </div>
     <div class="auth-right">
       <div class="auth-form-card">
+        <div class="form-header-badge">WELCOME ♡</div>
         <h1 class="auth-form-title">Create Account</h1>
-        <p class="auth-form-sub">Join DeluluCrafts — it's free</p>
+        <p class="auth-form-sub">Join DeluluCrafts — it takes less than a minute</p>
         <div class="err-box" id="errBox"></div>
         <form onsubmit="handleRegister(event)">
           <div class="form-group">
             <label class="form-label" for="name">Full Name</label>
-            <input class="form-input" type="text" id="name" placeholder="John Doe" required>
+            <input class="form-input" type="text" id="name" placeholder="E.g. Rose Johnson" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="email">Email</label>
+            <label class="form-label" for="email">Email Address</label>
             <input class="form-input" type="email" id="email" placeholder="you@example.com" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="phone">Phone <span style="color:var(--muted-2);font-size:10px;text-transform:none;font-weight:400">(optional)</span></label>
+            <label class="form-label" for="phone">Phone <span style="color:var(--text-muted);font-size:11px;text-transform:none;font-weight:400">(optional)</span></label>
             <input class="form-input" type="tel" id="phone" placeholder="+91 9XXXXXXXXX">
           </div>
           <div class="form-group">
@@ -49,8 +65,10 @@
           </div>
           <button class="btn-auth" type="submit" id="regBtn">Create Account →</button>
         </form>
-        <div class="auth-link" style="margin-top:20px">Already have an account? <a href="/login.html">Sign in →</a></div>
-        <div class="auth-link" style="margin-top:8px"><a href="/">← Back to Store</a></div>
+        <div class="auth-link" style="margin-top:20px">Already have an account? <a href="/login.html">Sign in here →</a></div>
+        <div style="text-align:center;margin-top:16px;font-family:var(--font-cursive);font-size:18px;color:var(--rose-accent)">
+          Made by hand, made with love ♡
+        </div>
       </div>
     </div>
   </div>
@@ -75,7 +93,9 @@
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data));
-        showToast(`Welcome to DeluluCrafts, ${data.name}!`, 'success');
+        document.cookie = `token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
+
+        showToast(`Welcome to DeluluCrafts, ${data.name}! Opening store…`, 'success');
         setTimeout(() => window.location.href = '/', 700);
       } catch (err) {
         errEl.textContent = err.message; errEl.style.display = 'block';

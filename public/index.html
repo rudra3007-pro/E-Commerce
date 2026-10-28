@@ -3,9 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DeluluCrafts — Curated Crafts & Premium Goods</title>
-  <meta name="description" content="Discover curated products at unbeatable prices. Electronics, fashion, home & kitchen and more.">
+  <title>DeluluCrafts — Handmade Bouquets & Personalized Gifts</title>
+  <meta name="description" content="Discover handmade bouquets, everlasting flowers, and curated personalized gift hampers crafted with love.">
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    // Direct entry guard: if not authenticated, immediately redirect to login page
+    if (!localStorage.getItem('token')) {
+      window.location.replace('/login.html');
+    }
+  </script>
 </head>
 <body>
   <div id="app-header"></div>
@@ -21,24 +27,14 @@
 
   <main class="container" style="padding-top:48px;padding-bottom:64px">
 
-    <!-- DEALS OF THE DAY -->
-    <section class="deals-strip">
-      <div class="deals-strip-head">
+    <!-- CURATED BESTSELLERS & BOUQUETS -->
+    <section class="mt-4">
+      <div class="sec-head">
         <div>
-          <div class="deals-label">🔥 Flash Deals</div>
-          <div class="deals-title">Today's Best Offers</div>
+          <div class="sec-label">Handcrafted With Love ♡</div>
+          <h2 class="sec-title sec-title-serif">Bestselling Bouquets & Gifts</h2>
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
-          <div class="timer-wrap">
-            <div class="timer-label">Ends in</div>
-            <div class="timer-seg"><div class="timer-num" id="timerH">00</div><div class="timer-unit">hrs</div></div>
-            <div class="timer-colon">:</div>
-            <div class="timer-seg"><div class="timer-num" id="timerM">00</div><div class="timer-unit">min</div></div>
-            <div class="timer-colon">:</div>
-            <div class="timer-seg"><div class="timer-num" id="timerS">00</div><div class="timer-unit">sec</div></div>
-          </div>
-          <button class="deals-see-all" onclick="goTo('shop.html')">View all →</button>
-        </div>
+        <button class="see-all" onclick="goTo('shop.html')">View all bouquets →</button>
       </div>
       <div class="products-grid" id="dealsGrid">
         <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text lg" style="margin-top:14px"></div><div class="skeleton skeleton-text sm"></div></div>
@@ -253,19 +249,6 @@
       } catch (err) { console.error('Load error:', err); }
     }
 
-    // ── Timer ──
-    function startTimer() {
-      const end = new Date(); end.setHours(23, 59, 59, 0);
-      const tick = () => {
-        const diff = end - new Date();
-        if (diff <= 0) return;
-        document.getElementById('timerH').textContent = String(Math.floor(diff/3600000)).padStart(2,'0');
-        document.getElementById('timerM').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-        document.getElementById('timerS').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-      };
-      tick(); setInterval(tick, 1000);
-    }
-
     // ── Init ──
     document.getElementById('app-header').innerHTML = buildHeader();
     document.getElementById('app-nav').innerHTML = buildCategoryNav();
@@ -274,7 +257,6 @@
     startAuto();
     renderCategories();
     loadProducts();
-    startTimer();
     updateCartCount();
   </script>
 </body>

@@ -39,6 +39,16 @@ app.get('/api/health', handleHealth);
 app.head('/health', (req, res) => res.status(200).end());
 app.head('/api/health', (req, res) => res.status(200).end());
 
+// Authentication redirect on root entry: unauthenticated visitors go directly to /login.html
+app.get(['/', '/index.html'], (req, res, next) => {
+  const cookies = req.headers.cookie || '';
+  const hasToken = cookies.split(';').some(c => c.trim().startsWith('token=') && c.trim().split('=')[1]?.length > 10);
+  if (!hasToken) {
+    return res.redirect('/login.html');
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
 

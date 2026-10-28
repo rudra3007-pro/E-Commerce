@@ -2524,8 +2524,23 @@ h1, h2, h3, h4, .font-serif {
 }
 
 /* ========================================================
-   KEYFRAME ANIMATIONS
+   KEYFRAME ANIMATIONS & TRANSITIONS
    ======================================================== */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -2544,6 +2559,184 @@ h1, h2, h3, h4, .font-serif {
 @keyframes floatGentle {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-6px); }
+}
+
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+@keyframes floatPetal {
+  0% {
+    transform: translateY(0) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-50vh) rotate(180deg) translateX(30px);
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translateY(-105vh) rotate(360deg) translateX(-25px);
+    opacity: 0;
+  }
+}
+
+/* Page entrance */
+body {
+  animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Floating Petals Background for Auth Pages */
+.auth-body {
+  position: relative;
+  overflow-x: hidden;
+  background: var(--cream-white);
+}
+
+.floating-petals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  bottom: -40px;
+  font-size: 20px;
+  opacity: 0;
+  animation: floatPetal 15s linear infinite;
+  filter: drop-shadow(0 2px 6px rgba(217, 140, 154, 0.25));
+  user-select: none;
+}
+
+.petal.p1 { left: 6%;  animation-duration: 13s; animation-delay: 0s;   font-size: 24px; }
+.petal.p2 { left: 20%; animation-duration: 17s; animation-delay: 2.5s; font-size: 16px; }
+.petal.p3 { left: 36%; animation-duration: 14s; animation-delay: 5s;   font-size: 22px; }
+.petal.p4 { left: 52%; animation-duration: 18s; animation-delay: 1s;   font-size: 18px; }
+.petal.p5 { left: 68%; animation-duration: 13s; animation-delay: 3.5s; font-size: 24px; }
+.petal.p6 { left: 82%; animation-duration: 16s; animation-delay: 6s;   font-size: 20px; }
+.petal.p7 { left: 93%; animation-duration: 15s; animation-delay: 2s;   font-size: 15px; }
+.petal.p8 { left: 45%; animation-duration: 19s; animation-delay: 4s;   font-size: 19px; }
+
+.form-header-badge {
+  display: inline-block;
+  background: var(--pastel-pink);
+  color: var(--rose-pink-dark);
+  border: 1px solid var(--blush-pink);
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.animate-fade-in-up {
+  animation: cardSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Smooth Product Card & Image Zoom Transition */
+.product-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease !important;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(217, 140, 154, 0.22), 0 4px 12px rgba(73, 53, 47, 0.05);
+  border-color: var(--rose-pink) !important;
+}
+
+.product-img {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.06);
+}
+
+/* Category Card Bounce Transition */
+.cat-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease !important;
+}
+
+.cat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(217, 140, 154, 0.2);
+  border-color: var(--rose-pink) !important;
+}
+
+.cat-card-icon {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.cat-card:hover .cat-card-icon {
+  transform: scale(1.22) rotate(6deg);
+}
+
+/* Auth Card and Button Shimmer */
+.auth-form-card {
+  animation: cardSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 16px 42px rgba(217, 140, 154, 0.16), 0 4px 12px rgba(73, 53, 47, 0.04) !important;
+}
+
+.btn-auth {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.25s ease !important;
+}
+
+.btn-auth:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 140, 154, 0.4);
+}
+
+.btn-auth:active {
+  transform: scale(0.98);
+}
+
+.btn-auth::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: rotate(25deg) translateY(-100%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+
+.btn-auth:hover::after {
+  transform: rotate(25deg) translateY(100%);
+}
+
+.btn-demo {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-demo:hover {
+  background: var(--rose-pink) !important;
+  color: #FFFFFF !important;
+  border-color: var(--rose-pink) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(217, 140, 154, 0.35);
 }
 
 /* ========================================================
