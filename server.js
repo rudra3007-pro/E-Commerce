@@ -11,8 +11,33 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check for Render
-app.get('/health', (req, res) => res.status(200).send('OK'));
+// Health check route for cron jobs / uptime pingers (keeps free-tier Render active)
+const handleHealth = async (req, res) => {
+  const checkDb = req.query.db === 'true';
+  let dbStatus = db.isSupabaseConfigured() ? 'connected' : 'local';
+
+  if (checkDb && db.isSupabaseConfigured()) {
+    try {
+      await db.products.count();
+      dbStatus = 'active';
+    } catch {
+      dbStatus = 'error';
+    }
+  }
+
+  res.status(200).json({
+    status: 'ok',
+    service: 'shopkart',
+    uptime: `${Math.floor(process.uptime())}s`,
+    database: dbStatus,
+    timestamp: new Date().toISOString()
+  });
+};
+
+app.get('/health', handleHealth);
+app.get('/api/health', handleHealth);
+app.head('/health', (req, res) => res.status(200).end());
+app.head('/api/health', (req, res) => res.status(200).end());
 
 // Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
