@@ -25,8 +25,13 @@
 
     <div class="shop-layout">
       <!-- SIDEBAR FILTERS -->
-      <aside class="filter-sidebar">
-        <div class="filter-title">Filters</div>
+      <div>
+        <button class="mobile-filter-toggle" onclick="toggleFilterSidebar()">
+          <span>🌸 Filters & Price Range</span>
+          <span id="filterArrow" style="font-size:16px">▾</span>
+        </button>
+        <aside class="filter-sidebar" id="filterSidebar">
+          <div class="filter-title">Filters</div>
         <div class="filter-group">
           <div class="filter-group-title">Category</div>
           <div id="catFilters">
@@ -50,6 +55,7 @@
         </div>
         <button class="btn-clear" onclick="clearFilters()">Clear All Filters</button>
       </aside>
+      </div>
 
       <!-- MAIN CONTENT -->
       <div>
@@ -130,6 +136,15 @@
       document.querySelectorAll('.sort-pill').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
       currentSort = sort; currentPage = 1; loadProducts();
+    }
+
+    function toggleFilterSidebar() {
+      const sb = document.getElementById('filterSidebar');
+      const arr = document.getElementById('filterArrow');
+      if (sb) {
+        sb.classList.toggle('open');
+        if (arr) arr.textContent = sb.classList.contains('open') ? '▴' : '▾';
+      }
     }
 
     function applyFilters() { currentPage = 1; loadProducts(); }
