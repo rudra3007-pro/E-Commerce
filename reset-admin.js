@@ -4,7 +4,7 @@ const db = require('./config/supabase');
 
 async function resetAdmin() {
   try {
-    const email = 'admin@shopkart.com';
+    const email = 'admin@delulucrafts.com';
     const password = 'admin123';
     console.log(`Setting up admin account: ${email}...`);
 

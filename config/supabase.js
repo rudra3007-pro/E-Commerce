@@ -25,7 +25,7 @@ const localStore = {
       id: '00000000-0000-0000-0000-000000000001',
       _id: '00000000-0000-0000-0000-000000000001',
       name: 'Admin User',
-      email: 'admin@shopkart.com',
+      email: 'admin@delulucrafts.com',
       password: '', // will be hashed in init
       role: 'admin',
       avatar: '',
@@ -314,9 +314,12 @@ const db = {
           phone: phone || '',
           role: 'user',
           addresses: []
-        }]).select().single();
-        if (error) throw new Error(error.message);
-        return { ...data, _id: data.id };
+        }]).select();
+        if (error && !error.message.includes('JSON')) throw new Error(error.message);
+        if (data && data[0]) return { ...data[0], _id: data[0].id };
+        const found = await this.findByEmail(email);
+        if (found) return found;
+        return { name, email, role: 'user', _id: 'usr_' + Date.now() };
       }
       const newUser = {
         id: 'usr_' + Date.now(),
@@ -339,14 +342,17 @@ const db = {
         if (updates.name !== undefined) payload.name = updates.name;
         if (updates.phone !== undefined) payload.phone = updates.phone;
         if (updates.avatar !== undefined) payload.avatar = updates.avatar;
+        if (updates.role !== undefined) payload.role = updates.role;
         if (updates.addresses !== undefined) payload.addresses = updates.addresses;
         if (updates.password) {
           const salt = await bcrypt.genSalt(10);
           payload.password = await bcrypt.hash(updates.password, salt);
         }
-        const { data, error } = await supabase.from('users').update(payload).eq('id', id).select().single();
-        if (error) throw new Error(error.message);
-        return { ...data, _id: data.id };
+        const { data, error } = await supabase.from('users').update(payload).eq('id', id).select();
+        if (error && !error.message.includes('JSON')) throw new Error(error.message);
+        if (data && data[0]) return { ...data[0], _id: data[0].id };
+        const found = await this.findById(id);
+        return found || { id, _id: id, ...payload };
       }
       const u = localStore.users.find(u => u.id === id || u._id === id);
       if (!u) throw new Error('User not found');

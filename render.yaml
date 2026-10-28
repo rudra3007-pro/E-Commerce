@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: shopkart
+    name: delulucrafts
     runtime: node
     plan: free
     buildCommand: npm install

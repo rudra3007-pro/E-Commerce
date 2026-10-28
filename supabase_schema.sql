@@ -1,5 +1,5 @@
 -- ========================================================
--- SHOPKART SUPABASE POSTGRESQL SCHEMA & INITIAL DATA
+-- DELULUCRAFTS SUPABASE POSTGRESQL SCHEMA & INITIAL DATA
 -- Run this script in the Supabase SQL Editor
 -- ========================================================
 
@@ -109,12 +109,12 @@ CREATE POLICY "Allow all reviews service role" ON public.reviews FOR ALL USING (
 
 -- ========================================================
 -- SEED DATA: ADMIN USER & SAMPLE PRODUCTS
--- Default Admin: admin@shopkart.com / admin123 (hashed with bcrypt)
+-- Default Admin: admin@delulucrafts.com / admin123 (hashed with bcrypt)
 -- ========================================================
 INSERT INTO public.users (name, email, password, role)
 VALUES (
   'Admin User',
-  'admin@shopkart.com',
+  'admin@delulucrafts.com',
   '$2a$10$eE0m7aG1t0kPq/4c5z5xee2K/aLrqj6hO9tZg/P2C50hXqB7z.Hqq', -- bcrypt for 'admin123'
   'admin'
 ) ON CONFLICT (email) DO NOTHING;

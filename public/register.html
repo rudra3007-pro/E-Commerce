@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register — ShopKart</title>
+  <title>Register — DeluluCrafts</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div class="auth-page">
     <div class="auth-left">
       <div style="text-align:center;margin-bottom:40px">
-        <div class="auth-left-brand">ShopKart</div>
-        <p class="auth-left-tagline">Join <em>Millions</em><br>of Happy Shoppers</p>
+        <div class="auth-left-brand">DeluluCrafts</div>
+        <p class="auth-left-tagline">Join the World<br>of Curated Crafts</p>
       </div>
       <div class="auth-features">
         <div class="auth-feature"><div class="auth-feature-ico">🎁</div><div class="auth-feature-text"><strong>Exclusive Deals</strong>Members-only offers & early access</div></div>
@@ -23,7 +23,7 @@
     <div class="auth-right">
       <div class="auth-form-card">
         <h1 class="auth-form-title">Create Account</h1>
-        <p class="auth-form-sub">Join ShopKart — it's free</p>
+        <p class="auth-form-sub">Join DeluluCrafts — it's free</p>
         <div class="err-box" id="errBox"></div>
         <form onsubmit="handleRegister(event)">
           <div class="form-group">
@@ -74,7 +74,7 @@
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data));
-        showToast(`Welcome to ShopKart, ${data.name}!`, 'success');
+        showToast(`Welcome to DeluluCrafts, ${data.name}!`, 'success');
         setTimeout(() => window.location.href = '/', 700);
       } catch (err) {
         errEl.textContent = err.message; errEl.style.display = 'block';

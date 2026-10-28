@@ -1,7 +1,7 @@
 {
-  "name": "shopkart",
+  "name": "delulucrafts",
   "version": "1.0.0",
-  "description": "Full-stack e-commerce website like Flipkart",
+  "description": "Full-stack e-commerce marketplace - DeluluCrafts",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

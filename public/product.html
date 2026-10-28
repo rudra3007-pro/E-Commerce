@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product – ShopKart</title>
+  <title>Product – DeluluCrafts</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -46,7 +46,7 @@
       if (!pid) return document.getElementById('productWrap').innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Product not found</h3></div>';
       try {
         product = await api.get(`/products/${pid}`);
-        document.title = `${product.name} – ShopKart`;
+        document.title = `${product.name} – DeluluCrafts`;
         document.getElementById('breadcrumbName').textContent = product.name;
         renderProduct();
         loadRelated();

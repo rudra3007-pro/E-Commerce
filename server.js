@@ -27,7 +27,7 @@ const handleHealth = async (req, res) => {
 
   res.status(200).json({
     status: 'ok',
-    service: 'shopkart',
+    service: 'delulucrafts',
     uptime: `${Math.floor(process.uptime())}s`,
     database: dbStatus,
     timestamp: new Date().toISOString()
@@ -64,7 +64,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n========================================`);
-  console.log(`⚡ ShopKart running on http://0.0.0.0:${PORT}`);
+  console.log(`⚡ DeluluCrafts running on http://0.0.0.0:${PORT}`);
   console.log(`📦 Database: ${db.isSupabaseConfigured() ? 'Supabase (Connected)' : 'Local/Supabase Hybrid (Ready for credentials)'}`);
   console.log(`========================================\n`);
 });

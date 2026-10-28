@@ -172,8 +172,8 @@ function buildHeader(activePage = '') {
     <header class="header">
       <div class="header-inner">
         <a href="/" class="logo">
-          <div class="logo-main">ShopKart</div>
-          <div class="logo-sub">Premium Marketplace</div>
+          <div class="logo-main">DeluluCrafts</div>
+          <div class="logo-sub">Artisan & Curated Goods</div>
         </a>
         <div class="search-wrap">
           <input type="text" id="globalSearch" placeholder="Search products, brands…"
@@ -272,8 +272,8 @@ function buildFooter() {
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand-area">
-              <div class="footer-brand">ShopKart</div>
-              <div class="footer-brand-sub">India's premium online marketplace — curated for quality, designed for you.</div>
+              <div class="footer-brand">DeluluCrafts</div>
+              <div class="footer-brand-sub">Curated crafts & premium lifestyle goods — designed with imagination.</div>
             </div>
             <div>
               <div class="footer-col-title">Company</div>
@@ -301,8 +301,8 @@ function buildFooter() {
       </div>
       <div class="footer-bottom">
         <div class="container flex-between" style="width:100%">
-          <div style="font-size:14px;font-weight:700;background:linear-gradient(135deg,#fff,var(--gold-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">ShopKart</div>
-          <div class="footer-copy">© 2024 ShopKart. All rights reserved.</div>
+          <div style="font-size:14px;font-weight:700;color:var(--primary)">DeluluCrafts</div>
+          <div class="footer-copy">© 2024 DeluluCrafts. All rights reserved.</div>
         </div>
       </div>
     </footer>
