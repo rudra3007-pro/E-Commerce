@@ -308,12 +308,11 @@ function buildFooter() {
               <a href="/cart.html" class="footer-link">Delivery & Shipping</a>
             </div>
             <div>
-              <div class="footer-col-title">Small Business Love</div>
-              <div style="background:var(--pastel-pink);border:1px dashed var(--rose-pink);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px">
+              <div class="footer-col-title">Handcrafted with Love</div>
+              <div style="background:var(--pastel-pink);border:1px dashed var(--rose-pink);border-radius:var(--radius-sm);padding:14px">
                 <div style="font-family:var(--font-script);font-size:22px;color:var(--rose-pink-dark)">for someone special ♡</div>
                 <div style="font-size:11.5px;color:var(--text-muted);margin-top:4px">Each bloom is uniquely shaped, petal by petal, wrapped in delicate satin.</div>
               </div>
-              <div class="footer-small-biz">✨ Thank you for supporting small business ♡</div>
             </div>
           </div>
         </div>

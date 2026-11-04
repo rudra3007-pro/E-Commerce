@@ -77,13 +77,7 @@
           <button class="btn-auth" type="submit" id="loginBtn">Enter Store →</button>
         </form>
 
-        <div class="auth-demo-box">
-          <div class="auth-demo-title">⚡ Quick Demo Admin Access</div>
-          <div class="auth-demo-cred">admin@delulucrafts.com / admin123</div>
-          <button class="btn-demo" type="button" onclick="demoLogin()">1-Click Demo Login</button>
-        </div>
-
-        <div class="auth-link">Don't have an account? <a href="/register.html">Create one here →</a></div>
+        <div class="auth-link" style="margin-top:24px">Don't have an account? <a href="/register.html">Create one here →</a></div>
         <div style="text-align:center;margin-top:16px;font-family:var(--font-cursive);font-size:18px;color:var(--rose-accent)">
           Made by hand, made with love ♡
         </div>
@@ -128,12 +122,6 @@
         errEl.style.display = 'block';
         btn.disabled = false; btn.textContent = 'Enter Store →';
       }
-    }
-
-    function demoLogin() {
-      document.getElementById('email').value    = 'admin@delulucrafts.com';
-      document.getElementById('password').value = 'admin123';
-      handleLogin(null);
     }
   </script>
 </body>
